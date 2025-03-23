@@ -130,8 +130,8 @@ elif st.session_state.selected_question:
         st.markdown(f"\n[🔗 View Gurucool SOP]({link})")
 
     # 🗓 PCIR Info
-    pcir = matched_row.get('PCIR', '')
-    if pd.notna(pcir) and pcir:
+    pcir = str(matched_row.get('PCIR', '')).strip()
+    if pd.notna(pcir) and pcir and pcir.lower() != "pcir":
         st.caption(f"**PCIR:** {pcir}")
 
     
