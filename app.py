@@ -112,7 +112,7 @@ elif st.session_state.selected_question:
         st.markdown(
             f"""
             <div style='
-                background-color: #f1f8e9;
+                background-color: #dcedc8;
                 padding: 10px;
                 margin-top: 10px;
                 border-left: 5px solid #4CAF50;
@@ -130,7 +130,7 @@ elif st.session_state.selected_question:
         st.markdown(
             f"""
             <div style='
-                background-color: #e3f2fd;
+                background-color: #dcedc8;
                 padding: 10px;
                 margin-top: 10px;
                 border-left: 5px solid #2196F3;
