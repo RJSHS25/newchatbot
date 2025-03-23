@@ -37,12 +37,44 @@ if not st.session_state.authenticated:
 # ✅ Load Q&A data
 @st.cache_data
 def load_qa_data():
-    return pd.read_csv("data.csv")
+    df = pd.read_csv("data.csv", encoding="cp1252")
+    df.replace({
+        "’": "'",
+        "‘": "'",
+        "“": '"',
+        "”": '"',
+        "–": "-",
+        "—": "-"
+    }, regex=True, inplace=True)
+    return df
 
 df = load_qa_data()
 
+# 💡 Suggest script improvements
+def suggest_script_improvements(script, channel="chat"):
+    suggestions = []
+    score = 5
+
+    if len(str(script).split()) < 10:
+        suggestions.append("🔍 Try expanding this response with more helpful context.")
+        score -= 1
+
+    if not any(word in str(script).lower() for word in ["sorry", "please", "let me", "glad", "help", "assist"]):
+        suggestions.append("🤝 Consider adding empathetic phrases to make it more human.")
+        score -= 1
+
+    if not any(phrase in str(script).lower() for phrase in ["let us know", "reach out", "you can also", "feel free"]):
+        suggestions.append("✅ Add a clear call-to-action or closing line.")
+        score -= 1
+
+    if channel == "email" and "thank" not in str(script).lower():
+        suggestions.append("💌 Add a polite closing like 'Thank you' or 'Regards'.")
+        score -= 1
+
+    return suggestions, score
+
 # 🧠 Q&A Interface
-st.title("🪐GuruCool Chatbot")
+st.title("💫GuruCool Chatbot")
 user_input = st.text_input("Ask a question:")
 
 if user_input and not st.session_state.selected_question:
@@ -51,7 +83,6 @@ if user_input and not st.session_state.selected_question:
         score = fuzz.partial_ratio(user_input.lower(), str(row["Question"]).lower())
         matches.append((row["Question"], score))
 
-    # Top 5 matches
     top_matches = sorted(matches, key=lambda x: x[1], reverse=True)[:5]
 
     if top_matches and top_matches[0][1] > 50:
@@ -73,19 +104,42 @@ elif st.session_state.selected_question:
 
     matched_q = st.session_state.selected_question
     matched_row = df[df["Question"] == matched_q].iloc[0]
+    faq_id = matched_row.get('FAQID', '')
 
-    st.success(f"**Matched Question:** {matched_q}")
+    st.success(f"**{faq_id} - Matched Question:** {matched_q}")
     st.markdown(f"**Answer:** {matched_row.get('Answer', '')}")
-    st.markdown(f"**Chat Script:** {matched_row.get('Chat Scripts', '')}")
-    st.markdown(f"**Email Script:** {matched_row.get('Email Scripts', '')}")
-    st.markdown(f"**Voice Script:** {matched_row.get('Voice Scripts', '')}")
-    if pd.notna(matched_row.get("Gurucool Link", None)):
-        st.markdown(f"[🔗 Gurucool Link]({matched_row['Gurucool Link']})")
-    st.markdown(f"**PCIR:** {matched_row.get('PCIR', '')}")
 
+    # ➕ 3-column layout for scripts
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("### 💬 Chat Script")
+        st.markdown(matched_row.get('Chat Scripts', ''))
+
+    with col2:
+        st.markdown("### 📧 Email Script")
+        st.markdown(matched_row.get('Email Scripts', ''))
+
+    with col3:
+        st.markdown("### 📞 Voice Script")
+        st.markdown(matched_row.get('Voice Scripts', ''))
+
+    # 🔗 Link
+    link = matched_row.get("Gurucool Link", "")
+    if pd.notna(link) and link:
+        st.markdown(f"\n[🔗 View Gurucool SOP]({link})")
+
+    # 🗓 PCIR Info
+    pcir = matched_row.get('PCIR', '')
+    if pd.notna(pcir) and pcir:
+        st.caption(f"**PCIR:** {pcir}")
+
+    
+    # 📥 Log
     log_entry = {
         "Email": st.session_state.user_email,
         "Typed Question": st.session_state.user_question,
+        "FAQID": faq_id,
         "Matched Question": matched_q,
         "Answer": matched_row.get('Answer', ''),
         "Chat Script": matched_row.get('Chat Scripts', ''),
@@ -95,4 +149,5 @@ elif st.session_state.selected_question:
         "PCIR": matched_row.get('PCIR', ''),
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
+
     pd.DataFrame([log_entry]).to_csv("chat_logs.csv", mode='a', header=not pd.io.common.file_exists("chat_logs.csv"), index=False)
