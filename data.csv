@@ -27,12 +27,12 @@ AMB_01,"Why does my account show an insufficient monthly balance even though I h
 
 Average Monthly Balance (AMB) is calculated monthly from the onboarding date. For example, if you joined on July 1, 2024, and your average daily balance is INR 3,000 in your Pot account and INR 5,000 in your Savings account over 31 days, your AMB calculation would be:
 
-(3,000 + 5,000) ÷ 30 = INR 267.
+(3,000 + 5,000) Ã· 30 = INR 267.
 Since this exceeds the minimum required AMB of INR 5,000, no non-maintenance fee will be charged.
 
-If you don’t have a Pot account, ensure your Savings account balance stays at or above INR 5,000 throughout the month. Alternatively, you can open an FD or a Super Pot account via Jupiter to maintain a closing balance of INR 20,000 by month-end.
+If you donâ€™t have a Pot account, ensure your Savings account balance stays at or above INR 5,000 throughout the month. Alternatively, you can open an FD or a Super Pot account via Jupiter to maintain a closing balance of INR 20,000 by month-end.
 
-If the AMB isn’t maintained, a fee of up to INR 200 + GST may be charged for every month of non-maintenance.
+If the AMB isnâ€™t maintained, a fee of up to INR 200 + GST may be charged for every month of non-maintenance.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 AMB_00,Do I need to maintain a minimum balance if I am a Pro account holder?,"If you are eligible for the Annual Monthly Balance (AMB):
@@ -109,7 +109,7 @@ To avoid non-maintenance charges, meet any one of the following criteria:
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track
 To know more about the charges, click here: https://jupiter.money/amc-amb-pro-faqs",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_06,Why aren’t free accounts being offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
+AMB_06,Why arenâ€™t free accounts being offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
 
 For AMB:
 1. Maintain INR 5,000 and above in the Savings and/or Pots account.
@@ -152,7 +152,6 @@ MF_14,Do I need to do SEBI KYC to open investment account in Jupiter Money?,"Yes
 MF_15,How can I check the exit load of a mutual fund?,You can check this information under scheme details for any particular scheme on the fund's page on the Jupiter Money platform.,Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_16,How much time does it take for money to get credited once a Fixed Deposit has been broken?,Money will get credited to your account within 5 minutes of breaking the Fixed Deposit.,Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_17,What is the applicable NAV for my Liquid/Overnight fund investments?,"On working days, investments in Liquid/Overnight funds made before 12:30 PM will be processed as per the previous day's NAV and investments made between 12:30 PM and 2:00 PM will be processed for the same day NAV.
-
 Orders during non market hours or non working days will be processed on the next working day and will get you the applicable NAV.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_18,What are the consequences of mutual fund KYC rejection?,You would be required to upload the docs again and complete NSDL eSign to do the KYC if rejected. The rejection of the KYC would change the status of your investment account to Hold.,Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_19,"I have redeemed my SIP at Rs 500' fund, in how much time would I get the money in my Bank account?",You would get the redemption credit in your bank account within 3-4 working days from the date of the redemption order.,Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
@@ -228,7 +227,7 @@ MF_77,Mutual fund KYC is applicable for which type of transactions?,"Effective J
 2. SIP purchases
 3. Redemptions",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_78,How much time does it take to complete my mutual fund KYC?,"The KYC process is a one time process and it would take maximum of 10 minutes of you to complete your KYC process. Once you submit all the KYC docs, this is verified by the KRA and it would take upto 3 working days.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-MF_79,What is KYC for mutual fund account activation?,"KYC is an acronym for 'Know your Client‚Äù, a term commonly used for Client Identification Process. SEBI has prescribed certain requirements relating to KYC norms for investing in the Mutual Funds in the form of verification of identity and address, financial status, occupation and other personal information.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
+MF_79,What is KYC for mutual fund account activation?,"KYC is an acronym for 'Know your Clientâ€šÃ„Ã¹, a term commonly used for Client Identification Process. SEBI has prescribed certain requirements relating to KYC norms for investing in the Mutual Funds in the form of verification of identity and address, financial status, occupation and other personal information.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_80,How can I transfer my current mutual funds to Jupiter?,We are working to make this feature available soon. However you can track and get insights on your external funds on Jupiter.,Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_81,Is there a lock-in period in High Growth funds?,"No, there is no lock-in period in these equity funds.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
 MF_82,What will happen with my investment if Jupiter shuts down?,"Jupiter is here with a long term vision and is not likely to shut down. In the unlikely case this happens, your investments are perfectly safe with mutual fund company.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
