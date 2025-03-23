@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from fuzzywuzzy import fuzz
 from datetime import datetime
+import streamlit.components.v1 as components
 
 # 📄 Load allowed users
 @st.cache_data
@@ -50,31 +51,8 @@ def load_qa_data():
 
 df = load_qa_data()
 
-# 💡 Suggest script improvements
-def suggest_script_improvements(script, channel="chat"):
-    suggestions = []
-    score = 5
-
-    if len(str(script).split()) < 10:
-        suggestions.append("🔍 Try expanding this response with more helpful context.")
-        score -= 1
-
-    if not any(word in str(script).lower() for word in ["sorry", "please", "let me", "glad", "help", "assist"]):
-        suggestions.append("🤝 Consider adding empathetic phrases to make it more human.")
-        score -= 1
-
-    if not any(phrase in str(script).lower() for phrase in ["let us know", "reach out", "you can also", "feel free"]):
-        suggestions.append("✅ Add a clear call-to-action or closing line.")
-        score -= 1
-
-    if channel == "email" and "thank" not in str(script).lower():
-        suggestions.append("💌 Add a polite closing like 'Thank you' or 'Regards'.")
-        score -= 1
-
-    return suggestions, score
-
 # 🧠 Q&A Interface
-st.title("💫GuruCool Chatbot")
+st.title("💫 GuruCool Chatbot")
 user_input = st.text_input("Ask a question:")
 
 if user_input and not st.session_state.selected_question:
@@ -106,36 +84,65 @@ elif st.session_state.selected_question:
     matched_row = df[df["Question"] == matched_q].iloc[0]
     faq_id = matched_row.get('FAQID', '')
 
+    # 🔢 Unified layout (stacked)
     st.success(f"**{faq_id} - Matched Question:** {matched_q}")
     st.markdown(f"**Answer:** {matched_row.get('Answer', '')}")
 
-    # ➕ 3-column layout for scripts
     col1, col2, col3 = st.columns(3)
-
     with col1:
         st.markdown("### 💬 Chat Script")
         st.markdown(matched_row.get('Chat Scripts', ''))
-
     with col2:
         st.markdown("### 📧 Email Script")
         st.markdown(matched_row.get('Email Scripts', ''))
-
     with col3:
         st.markdown("### 📞 Voice Script")
         st.markdown(matched_row.get('Voice Scripts', ''))
 
-    # 🔗 Link
-    link = matched_row.get("Gurucool Link", "")
-    if pd.notna(link) and link:
-        st.markdown(f"\n[🔗 View Gurucool SOP]({link})")
+    # 📄 Gurucool Article Section
+    link = str(matched_row.get("Gurucool Link", "")).strip()
+    if link.lower() != "gurucool link" and link:
+        st.markdown("---")
+        st.markdown("### 🧠 Related Gurucool Article")
+        st.markdown(f"[🔗 View Gurucool SOP]({link})")
 
-    # 🗓 PCIR Info
+    # 📌 PCIR Info
     pcir = str(matched_row.get('PCIR', '')).strip()
-    if pd.notna(pcir) and pcir and pcir.lower() != "pcir":
-        st.caption(f"**PCIR:** {pcir}")
+    if pcir:
+        st.markdown(
+            f"""
+            <div style='
+                background-color: #f1f8e9;
+                padding: 10px;
+                margin-top: 10px;
+                border-left: 5px solid #4CAF50;
+                border-radius: 4px;
+                font-size: 15px;
+            '>
+                <strong>📌 PCIR:</strong> {pcir}
+            </div>
+            """, unsafe_allow_html=True
+        )
 
-    
-    # 📥 Log
+    # 🛠️ Freshdesk Properties
+    freshdesk_props = str(matched_row.get('Freshdesk Properties', '')).strip()
+    if freshdesk_props:
+        st.markdown(
+            f"""
+            <div style='
+                background-color: #e3f2fd;
+                padding: 10px;
+                margin-top: 10px;
+                border-left: 5px solid #2196F3;
+                border-radius: 4px;
+                font-size: 15px;
+            '>
+                <strong>🛠️ Freshdesk Properties:</strong> {freshdesk_props}
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+    # 📅 Log
     log_entry = {
         "Email": st.session_state.user_email,
         "Typed Question": st.session_state.user_question,
@@ -147,6 +154,7 @@ elif st.session_state.selected_question:
         "Voice Script": matched_row.get('Voice Scripts', ''),
         "Gurucool Link": matched_row.get('Gurucool Link', ''),
         "PCIR": matched_row.get('PCIR', ''),
+        "Freshdesk Properties": matched_row.get('Freshdesk Properties', ''),
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
