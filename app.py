@@ -52,7 +52,7 @@ def load_qa_data():
 df = load_qa_data()
 
 # 🧠 Q&A Interface
-st.title("💫 GuruCool Chatbot")
+st.title("🪐 GuruCool Chatbot")
 user_input = st.text_input("Ask a question:")
 
 if user_input and not st.session_state.selected_question:
