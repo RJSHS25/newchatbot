@@ -50,6 +50,10 @@ def load_qa_data():
 
 df = load_qa_data()
 
+# 🧠 Show logo + chatbot title
+st.image("Jupiter_Gurucool.webp", width=120)  # 👈 Add this line
+st.title("🪐 GuruCool Chatbot")
+
 # 💡 Suggest script improvements
 def suggest_script_improvements(script, channel="chat"):
     suggestions = []
