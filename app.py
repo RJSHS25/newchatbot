@@ -107,11 +107,11 @@ elif st.session_state.selected_question:
         st.markdown(f"[🔗 View Gurucool SOP]({link})")
 
     # 🗓 PCIR Info
-    st.write("🧪 Debug: Raw PCIR value:", repr(pcir))
-    if pd.notna(pcir) and pcir and pcir.lower() != "pcir":
-        st.caption(f"**PCIR:** {pcir}")
-    if pd.notna(pcir) and pcir and pcir.lower() != "pcir":
-        st.caption(f"**PCIR:** {pcir}")
+    st.write("🧪 Debug: Raw PCIR value:", repr(PCIR))
+    if pd.notna(PCIR) and PCIR and PCIR.lower() != "pcir":
+        st.caption(f"**PCIR:** {PCIR}")
+    if pd.notna(PCIR) and PCIR and PCIR.lower() != "PCIR":
+        st.caption(f"**PCIR:** {PCIR}")
 
     # 📅 Log
     log_entry = {
