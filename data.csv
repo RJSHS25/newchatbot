@@ -23,7 +23,7 @@ To avoid non-maintenance charges, you need to meet any one of the following crit
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track
 To know more about the charges, click here: https://jupiter.money/amc-amb-pro-faqs",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_01,"Why does my account show an insufficient monthly balance even though I have INR 5,000 in it?","To check if you are eligible for AMB or exempt from non-maintenance fees, please refer to the message sent by Federal Bank on 11 Nov 2024.
+AMB_03,"Why does my account show an insufficient monthly balance even though I have INR 5,000 in it?","To check if you are eligible for AMB or exempt from non-maintenance fees, please refer to the message sent by Federal Bank on 11 Nov 2024.
 
 Average Monthly Balance (AMB) is calculated monthly from the onboarding date. For example, if you joined on July 1, 2024, and your average daily balance is INR 3,000 in your Pot account and INR 5,000 in your Savings account over 31 days, your AMB calculation would be:
 
@@ -35,7 +35,7 @@ If you don’t have a Pot account, ensure your Savings account balance stays at 
 If the AMB isn’t maintained, a fee of up to INR 200 + GST may be charged for every month of non-maintenance.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_00,Do I need to maintain a minimum balance if I am a Pro account holder?,"If you are eligible for the Annual Monthly Balance (AMB):
+AMB_04,Do I need to maintain a minimum balance if I am a Pro account holder?,"If you are eligible for the Annual Monthly Balance (AMB):
 
 To avoid non-maintenance charges, you need to meet any of the following criteria:
 
@@ -47,7 +47,7 @@ To avoid non-maintenance charges, you need to meet any of the following criteria
 If the AMB is not maintained, a fee of up to ?200 plus 18% GST will be charged.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_01,"I'm unable to maintain the required Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") due to a lack of income. What are my options?","If you are eligible for the Annual Monthly Balance (AMB):
+AMB_05,"I'm unable to maintain the required Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") due to a lack of income. What are my options?","If you are eligible for the Annual Monthly Balance (AMB):
 
 To avoid non-maintenance charges, you need to meet any of the following criteria:
 
@@ -59,7 +59,7 @@ To avoid non-maintenance charges, you need to meet any of the following criteria
 If the AMB is not maintained, a fee of up to ?200 plus 18% GST will be charged.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_02,"From when Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") charges were applicable?","If you are eligible for the Annual Monthly Balance (AMB):
+AMB_06,"From when Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") charges were applicable?","If you are eligible for the Annual Monthly Balance (AMB):
 
 To avoid non-maintenance charges, you need to meet any of the following criteria:
 
@@ -71,7 +71,7 @@ To avoid non-maintenance charges, you need to meet any of the following criteria
 If the AMB is not maintained, a fee of up to ?200 plus 18% GST will be charged.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_03,"Am I the only one being charged Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"")? 
+AMB_07,"Am I the only one being charged Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"")? 
 None of my friends are getting them.","If you are eligible for the Annual Monthly Balance (AMB):
 
 To avoid non-maintenance charges, you need to meet any of the following criteria:
@@ -84,7 +84,7 @@ To avoid non-maintenance charges, you need to meet any of the following criteria
 If the AMB is not maintained, a fee of up to ?200 plus 18% GST will be charged.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_04,"If my balance goes below 5000, will you guys charge the amount","If you are eligible for the Annual Monthly Balance (AMB):
+AMB_08,"If my balance goes below 5000, will you guys charge the amount","If you are eligible for the Annual Monthly Balance (AMB):
 
 To avoid non-maintenance charges, you need to meet any of the following criteria:
 
@@ -96,7 +96,7 @@ To avoid non-maintenance charges, you need to meet any of the following criteria
 If the AMB is not maintained, a fee of up to ?200 plus 18% GST will be charged.
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track""",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_05,"You have changed the terms and conditions (t&c / t&cs) of the account and are now charging me Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") for the account.","We understand your disappointment regarding the account no longer being a zero-balance account. However, the bank has revised its policy, and AMB charges are now applicable for users not maintaining the required balance. All information regarding the bank's revised policy was communicated to customers in August 2024 via their registered email addresses.
+AMB_09,"You have changed the terms and conditions (t&c / t&cs) of the account and are now charging me Annual Monthly Balance (eg ""AMB"", ""Amb"", ""amb"") for the account.","We understand your disappointment regarding the account no longer being a zero-balance account. However, the bank has revised its policy, and AMB charges are now applicable for users not maintaining the required balance. All information regarding the bank's revised policy was communicated to customers in August 2024 via their registered email addresses.
 
 These charges enable us to deliver best-in-class banking features and support our operational efficiency.
 
@@ -109,7 +109,7 @@ To avoid non-maintenance charges, meet any one of the following criteria:
 
 Use the following link to check if you've met the balance requirements or to see how much needs to be deposited to avoid AMB charges: https://app.jupiter.money/pro/mab-track
 To know more about the charges, click here: https://jupiter.money/amc-amb-pro-faqs",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_06,Why aren’t free accounts being offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
+AMB_10,Why aren’t free accounts being offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
 
 For AMB:
 1. Maintain INR 5,000 and above in the Savings and/or Pots account.
@@ -122,7 +122,7 @@ For AMC:
 Have cumulative eligible non-ATM transactions or spends of INR 25,000 and above within a 12-month period from issuance/last AMC charge.
 Upgrade and maintain the account as a PRO or Salary account for at least 6 months within the 12-month period since issuance.
 Should there be any changes to the bank's policies, rest assured we will proactively communicate the updates.",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
-AMB_07,Why aren't zero balance account beeing offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
+AMB_11,Why aren't zero balance account beeing offered?,"Following the bank's revised policy communicated to all customers in August 2024 via their registered email addresses, charges for non-maintenance of AMB (Average Monthly Balance) and AMC (Annual Maintenance Charges) have been implemented. The criteria to avoid these charges remain consistent for all customers, and meeting any of the conditions outlined below will exempt you from the charges.
 
 For AMB:
 1. Maintain INR 5,000 and above in the Savings and/or Pots account.
@@ -360,3 +360,329 @@ Select the order for which you want to check the status and see the details.",Ch
 MF_188,I'm a NRI. Can I open an investment Account?,"Currently, an NRI cannot open an investment account on the Jupiter Money platform. We only support Resident Individual accounts.
 
 Click here: https://app.jupiter.money/mutual-funds/explore",Chat Scripts,Email Scripts,Voice Scripts,https://sites.google.com/jupiter.money/jupiter-gurucool,PCIR,Freshdesk Properties
+DC_01,How can I access the tokens linked to my Jupiter debit card?,"All tokens linked to your Jupiter Debit Card can be accessed in ""Card-->Settings--> Manage Card Tokens''",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_02,I have not received Debit Card amount refund from an online merchant after an order cancellation or product return. What do I do?,"It takes upto 10 working days (from the refund initiation day by merchant) for the refunds to get processed from bank's end. Request you to please wait till end of 10 working days from the refund initiation day to get your refund. Don't worry, your money is safe. In case of any concerns or in case you do not receive the amount within the next 10 working days, please feel free to chat with with an expert.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_03,Are there any charges for Virtual Debit Card?,"No, there are no issuance charges for Virtual Debit Card. An annual fee of Rs. 199 (plus GST) will be applied after 12 months of account opening and every year post that.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_04,What do I do if I haven't received an OTP for my Debit Card transaction?,"In case you did not receive an OTP on your mobile number, you can also choose to receive the OTP on your email address. This option is available on the OTP page while you are making an online payment using your Jupiter debit card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_05,What are the charges of a Jupiter Debit Card?,"There is no issuance fee for a Virtual Debit Card. For a physical card, a fee of Rs. 300(excluding GST) will be charged at the time of application of physical debit card.
+
+After one year of card issuance, an annual fee of Rs.300 (excluding GST) is applicable every year on both virtual and physical debit cards.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_06,What happens to my card if I do not pay the annual fee?,"Paying the annual fee on time is recommended to avoid any interruption to your account usage.
+
+If the annual fee is not paid, Federal Bank will recover the fees later, subject to availability of funds in the bank account. Also, your card may get disabled if the fee remains unpaid.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_07,Are there any charges for using my Jupiter Debit Card for in-store or online purchases?,"No, we do not charge any domestic online or in-store transactions. However, some merchants may charge a convenience or processing fee.
+
+Charges for international purchases differ by account status. You can view them here.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_08,When will the annual fee be charged on the Jupiter debit card?,"The annual fee on the Jupiter debit card will be charged after 12 months of first card issuance date and once every year after that.
+
+E.g. If your first debit card was issued on April 15, 2023, the annual fee will be charged after April 15, 2024 and every following year in the same month.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_09,Is the subscription / Auto-Pay on Jupiter debit card offer eligible on all transactions?,"No, the Auto-Pay offer on your debit card is eligible only on the first/registration transaction of the subscription. The subsequent transactions will be rewarded with 1% cashback in the form of Jewels.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_10,What do I do if my debit card is stuck at an ATM?,"Please block your debit card immediately and apply for a new card if your card is stuck in the ATM.
+For any additional support, chat with our expert.
+
+You can block your card here: https://app.jupiter.money/debit-card/advance-card-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_11,What is a Jupiter virtual card?,"Your Jupiter virtual card is a virtual debit card that can be used to make only online purchases and payments. To make cash withdrawals at ATMs and in-store purchases, we suggest that you get a physical debit card . To get a physical debit card, click here: https://app.jupiter.money/debit-card/home",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_12,Can I use my Jupiter Debit Card for international transactions?,"Yes! You can use your Debit Card for international transactions such as withdrawing money from ATMs and making online and in-store payments.
+
+Please make sure to enable international transactions on the app.
+
+Enable international transactions: https://app.jupiter.money/debit-card/change-transaction-settings?type=international",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_13,Can I use my jupiter debit card to purchase a subscription/register for Auto-Pay?,Yes! You can do so on the merchant's website/app. You will need to enter the details of your Jupiter Debit Card as the payment method while purchasing the subscription/service.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_14,What will happen if I do not approve an Auto-Pay transaction on my Jupiter Debit Card before the due date?,"If you do not approve the recurring payment, the merchant might put the service on hold. You will have to get in touch with the merchant to re-initiate the payment due.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_15,What details will be required for setting the Auto-pay via my debit card?,"You will be required to enter your card details on the merchant's portal. However, the details might vary from merchant to merchant.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_16,Does contactless debit card work at all payment terminals?,"No, always look for the contactless card indicator on the payment terminal or check with the agent handling the terminal to find out if contactless cards are accepted.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_17,Will I receive a pre-debit notification for any active Auto-Pay subscriptions via my Jupiter debit card?,"Yes, a pre-debit notification will be sent to your registered mobile number, 24hrs prior to the due date of the transaction.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_18,Do I need to enter my Jupiter Debit Card PIN for every ATM transaction?,"Yes, you have to enter your Debit Card PIN to authenticate every transaction made at an ATM. 
+
+PIN entry is required to safeguard customers against fraud and misuse.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_19,Do I need to enter the debit card PIN for every in-store purchase transaction?,"PIN is mandatory for all in-store purchase transactions in India, with the exception of contactless transactions below ?5,000. For transactions outside India, PIN may not be mandatory and you may be required to enter the PIN if the payment terminal supports it.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_20,Do I need to enter a PIN for contactless payments with my Jupiter debit card?,"No, the debit card PIN is not required for any contactless transactions upto ?5000. You will be required to enter the PIN only for transactions more than ?5000.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_21,Can I withdraw cash with my Jupiter debit card?,"Yes, you can withdraw cash at any ATM using your Jupiter debit card. Money will be debited from your account. Maximum daily cash withdrawal limit on your card is ?50,000.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_22,What can I do if I lose my Jupiter Debit Card?,"Please block your Card immediately from the app.
+
+If you're unable to block your card, please connect with our experts
+
+Block Debit Card: https://app.jupiter.money/debit-card/advance-card-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_23,When will my account get debited for the recurring / future payment transaction via debit card?,"For transactions where AFA is not required, your account will get debited post 24 hours of sending the pre-debit notification.
+
+For transactions where AFA is required, your account will get debited within 3 days of sending the pre-debit notification. Transaction where an approval is needed, will be processed only after you do so.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_24,What Rewards do I earn on my Jupiter Debit Card?,"Pro Users & Salary Account Holders are eligible for Debit Card Rewards. 
+
+You get 5X Jewels up to 750 Jewels per month on domestic non-ATM Debit Card transactions. 
+
+5X Jewels means that you will earn 5 Jewels on every 100 Rupee spent.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_25,How will I know that a recurring transaction registered on my debit card has been charged?,"After a transaction is charged, you will receive account debit information from the Bank. You can also check the transaction details in the transaction history page on the app.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_26,Will my card details change when I upgrade from a virtual to a physical debit card?,"No, your card details will remain the same even when you upgrade from a virtual card to a physical card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_27,What is the difference between Sleep Mode and Freeze Card on my Jupiter debit card?,"Freeze card blocks transactions on your Jupiter debit card from when you have frozen to when you unfreeze it.
+
+Sleep mode blocks transactions on your debit card every day during the time period that you have chosen.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_28,Does Jupiter debit card offer complimentary airport lounge access?,"No, your Jupiter Debit Card does not offer complimentary airport lounge access.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_29,What are contactless cards?,"Contactless cards are used to make quick 'Tap & Pay' transactions (upto ?5,000) at payment terminals without the need of entering your card PIN",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_30,Where will my Debit Card be delivered?,Your Debit Card will be delivered to the address entered when the request was placed. This address can only be changed at the time of placing the request.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_31,Are Federal bank debit cards offers available on Jupiter debit card?,"No, your Jupiter debit card does not have the offers available on Federal bank debit card. Look up all the exciting Jupiter Debit card offers by navigating to the Rewards section.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_32,Can I use my Jupiter debit card for contactless payments?,"Yes, you can use your Jupiter debit card for contactless payments.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_33,Will there by any charges for setting an Auto-Pay through my Jupiter Debit Card,"No, there aren't any additional charges for setting an Auto-Pay through Jupiter Debit Card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_34,What if I'm unable to set Auto-Pay on a specific merchant through my Jupiter debit card?,You can make the payment through your Jupiter Debit Card as a one-time transaction & avail the service from the merchant.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_35,Can I set Auto-Pay on any merchant through my Jupiter Debit Card?,"Currently this service is available on selected merchants. If you are unable to set Auto-Pay on a particular merchant, you can still make the payment as a one-time transaction & avail the service from the merchant.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_36,What is the list of supported bank ATMs for my Jupiter debit card ?,"Your Jupiter debit card will work on all VISA supported ATMs. Click here to view some of the supported banks where you can use your Jupiter Debit Card
+
+Click Here: https://jupiter.money/atms-supported/",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_37,Can I restart a cancelled subscription/Auto-Pay on my Jupiter Debit Card?,"No, you cannot restart a cancelled subscription/Auto-Pay. You will have to re-avail the service from the merchant's website/app.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_38,Can I use the physical Debit Card to deposit money at an ATM?,"Unfortunately, we do not allow cash deposit via ATMs.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_39,How can I block my Jupiter Debit Card?,"You can block your Card by navigating to the 'Card' tab --> Settings --> Block Card
+
+If you're unable to do so, please chat with our experts.
+Please note that you will not be able to unblock your Card once it's blocked.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_40,Does the Jupiter Debit Card come with VISA benefits?,"Yes, your Jupiter Debit Card is a VISA Card and comes with the associated benefits. 
+
+Click here: https://www.visa.co.in/pay-with-visa/find-a-card/debit-cards.html to know more.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_41,Can I change the name on my Jupiter Debit Card?,"Unfortunately, we do not allow name changes on Debit Cards.
+
+However, if your name is incorrectly printed on the Card, write to us at support@jupiter.money and we will help you out.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_42,Are there any charges for transaction decline at ATM?,"For any transaction declined at ATM due to Invalid CVV, Transaction Channel Deactivated, Withdrawal Limit Exceeded, Blocked Card, Incorrect PIN or Blocked due to Excessive PIN tries, 
+
+The following charges will be levied -
+No charges for the first 2 transaction declines.
+?100/instance for repeat declines with the same error in a calendar month.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_43,What can I use the Jupiter Debit Card for?,"You can use your Jupiter Debit Card to make online and in-store purchases and to withdraw cash from ATMs. 
+
+You can use your Jupiter Debit Card internationally and within India, and you can easily enable/ disable the payment channels from the 'Card' tab.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_44,What is AFA?,AFA stands for Additional Factor of Authentication which is required to approve any recurring/subsequent transaction above the Maximum Amount or INR 15000.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_45,Where can I find my Debit Card number?,"You can view your Debit plus ATM Card details like number, expiry, and CVV (security code) by swiping the Debit Card image in the 'Card' tab.
+
+View Debit Card details: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_46,What do you mean by token linked to my Jupiter Debit Card?,"Whenever you save your Jupiter debit card with any merchant, your card details are stored in form of a token to enhance security of the card transaction",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_47,What is a Jupiter Debit Card PIN?,"Jupiter Debit Card PIN is a 4-digit number that you need to use for your Debit Card transactions.
+
+Set Debit Card PIN: https://app.jupiter.money/debit-card/advance-card-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_48,What can I use the token details for?,You can 'Suspend' or 'Delete' the tokens from the App if you want to unsave the card from the merchant portal,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_49,What happens if I delete a token linked to my Jupiter debit card?,"On deleting the token, your Jupiter Debit Card will be unsaved from the specific merchant, within 24 hours, and you will have to resave your card details with the merchant on your next transaction",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_50,What are the charges for transaction decline at ATM due to insufficient account balance?,"For transactions declined at ATM due to insuffcient account balance, The following charges will be levied:
+1. For Domestic Transactions -
+At Federal Bank ATM - No Charges
+At any other ATM - Rs 25 per decline
+
+2. For International Transactions -
+At any ATM - Rs. 100 per decline",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_51,How can I enable Point of Sale transactions on my Debit Card?,"You can enable/disable different types of transactions (ATM, Point of Sale, Contactless or Online) for domestic and international usage by navigating to Cards--> Settings --> Manage Transactions
+
+To do this now, click here: https://app.jupiter.money/debit-card/transaction-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_52,What are the annual charges for a Jupiter Debit Card?,"There are no annual charges for the Jupiter Debit plus ATM Card.
+
+However, you will be charged a one-time issuance fee of ?300 (exclusive of GST) when you apply for a Jupiter Debit plus ATM Card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_53,What are the daily transaction limits on my Jupiter Debit Card?,"The maximum daily limits on your Debit Card are ?50,000 for cash withdrawals from ATMs and ?10,00,000 for online and in-store purchases cumulatively. 
+
+The maximum limit for contactless transactions is ?5,000 per transaction.
+
+You can change these limits by navigating to the 'Card' tab -> Settings --> Manage Daily Limits.
+
+Manage debit card daily limits: https://app.jupiter.money/debit-card/daily-limits",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_54,Will I get instant discount for subscription transactions?,"No, discount will be credited in the form of Jewels post subscription is successfully purchased.
+
+
+
+Imp- Jewels will be credited only if existing Jewels criteria is sufficied",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_55,Is 1% Jewels offer eligible on all subscription/Auto-Pay transactions?,Subscription transactions will get 1% Jewels if eligible as per the existing Jewels conditions,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_56,How do I freeze my Jupiter debit card?,"You can freeze or temporarily block your Jupiter debit card by navigating to the Card section and selecting the ""Freeze"" option.
+
+Freeze Card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_57,How can I activate my Jupiter Debit cum ATM Card?,"You can activate it by setting your Debit Card PIN in the app.
+
+Set Debit Card PIN: https://app.jupiter.money/debit-card/advance-card-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_58,Are there any charges for Virtual Debit Card?,"No, there are no charges for Virtual Debit Card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_59,Can I unblock my Debit Card?,"Unfortunately, you cannot unblock your Jupiter Debit Card. We do this to safeguard Jupiter customers against fraud and misuse. 
+
+You can apply for a new Debit plus ATM Card in the 'Card' tab.
+
+Apply for a debit card: https://app.jupiter.money/debit-card/home?showAdvanceSettings=true",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_60,Will I need to approve the payment for any recurring/subsequent transactions via my Jupiter debit card?,"Your approval for any recurring/subsequent transaction will be required only if transaction amount is greater than the Maximum Amount or INR 15000.
+
+
+
+The link for approval will be sent in the pre-debit notification on your registered phone number.
+
+
+
+To approve the debit, you will need to enter your MPIN.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_61,Is AFA required for every recurring transaction of the Auto-Pay registered on my debit card?,AFA will be required on the recurring/future payments if the transaction amount is greater than the maximum amount or INR 15000.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_62,What happens if I suspend a token linked to my Jupiter debit card?,"On Suspending the token, you will not be able to use your card on the specific merchant till you reactivate the token. Your debit card transaction on the merchant will fail.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_63,What does the 'Freeze Card' option in Jupiter debit card do?,"Freeze Card' blocks your card temporarily. You won't be able to use your card for any transaction until you 'Unfreeze' it.
+
+It is helpful in situations where you think you might have lost or misplaced your card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_64,Can I re-activate my Jupiter debit card token?,You can only re-activate a Suspended token linked to your card by navigating to Card-->Settings--> Manage Card Tokens,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_65,Can tokens linked to different merchants be the same?,"No, token details linked to every merchant will be different",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_66,How will tokens be linked to my Jupiter Debit Card,"Whenever you save your Jupiter debit card with any merchant, a token will be created & linked to your Jupiter debit card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_67,I have successfully paid the Debit Card fee but have not received details for my physical debit card?,"Your request for physical debit card is under process and you will receive the confirmation shortly. In case of any request failures, you will receive the refund of the Card Fee and will have to initiate a new request.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_68,How can I delete the token linked to my Jupiter Debit Card?,"You can delete the tokens linked to your Jupiter Debit Card by navigating to Card-->Settings--> Manage Card Tokens
+
+
+
+On deleting the token, your card will be unsaved with the specific merchant and you will have to resave your card on the merchant's platform.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_69,Can I see the tokens linked to my blocked Jupiter debit card?,Can I modify any Auto-Pay via my Jupiter debit card on the app?,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_70,Will I need the token details to perform a transaction via my Jupiter Debit Card?,"No, you do not need the token details to perform any transaction from your Jupiter Debit Card. You can initiate the transaction by selecting your card from the Saved Card options at the merchant's platform",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_71,Is it unsafe to display the card tokens on the app?,You will not have access to the exact token linked to your Jupiter Debit Card to prevent any kind of misuse. You will be able to access the merchant details where your Jupiter Debit Card is saved. You can also Suspend or Delete the tokens linked to your card,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_72,Can I see the token number linked to my Jupiter Debit Card on the App?,You will not have access to the exact token linked to your Jupiter Debit Card to prevent any kind of misuse. You will be able to access the merchant details where your Jupiter Debit Card is saved. You can also Suspend or Delete the tokens linked to your card,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_73,How can I change my Jupiter Debit Card PIN?,"Don't worry! You can easily change your Debit Card PIN by clicking on ""PIN"" on the Card tab on the app.
+
+Change Debit Card PIN: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_74,How can I suspend the token linked to my Jupiter Debit Card?,"You can only suspend an active token linked to your card by navigating to Card-->Settings--> Manage Card Tokens
+
+
+
+On suspending the token, you will not be able to transact with your debit card on the specific merchant.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_75,How can I re-activate the token linked to my Jupiter debit card token?,You can re-activate a suspended token linked to your card by navigating to Card-->Settings--> Manage Card Tokens,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_76,"If I replace my existing debit card, will my debit card tokens remain active?","If you block your Jupiter Debit Card, all active tokens linked to your card will be permanently deleted & your card will be unsaved with the specific merchant within 24 hours. You will have to save your new Jupiter Debit Card details with the merchant on your next transaction.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_77,Can I get the list of merchants where Jupiter debit card token are saved ?,"The merchant details where you have saved your Jupiter Debit Card can be accessed in ""Card-->Settings--> Manage Card Tokens""",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_78,Are there any charges to upgrade from Virtual to Physical Debit Card?,You will be levied a one-time Card Fee of Rs. 300 (exclusive of GST) when you upgrade to a Debit cum ATM card.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_79,How do I pay the Debit Card Fee to apply for Physical Debit Card?,The Card Fee can be paid via Bank Transfer at the time of applying for Physical debit card. The payment can be made only via your Account.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_80,Can I cancel an Auto-Pay or subscription registered on my Jupiter Debit Card?,"Yes! You can cancel an Auto-Pay anytime. Once cancelled, future payments will not be processed and your service/ subscription will be cancelled.
+
+Go to the 'Cards' tab --> Settings -> Manage Auto-Pay
+
+Cancel auto-pay: https://app.jupiter.money/auto-pay/all-subscriptions",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_81,Can I avail DC rewards benefits again if my DC benefits was withdrawn once as I was not able to maintain my NRV > 10K in any month?,"Yes ofcourse! You will become eligible to earn rewards on Debit Card transactions and get upgraded to 'Pro' if you maintain monthly average balance of ?10,000 or above for 1 month.
+
+
+
+Your NRV calculation is updated everyday to check it click here: https://app.jupiter.money/main?screen=Pro",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_82,I have successfully paid the Jupiter Debit Card fee but the request for physical debit card could not be processed?,"We apologise that we could not process your request due to technical issues. Your amount will be reversed to your account.
+
+Please initiate a new request for Physical Debit Card.
+
+Get a physical Debit Card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_83,"My DC rewards expire this month, how do I continue earning rewards in the next month as well?","You will need to maintain a Net Relationship Value (NRV) of ?10,000 or above this month to upgrade to Pro and continue earning 1% Rewards on Debit card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_84,Will I get alerts when transactions are made on my Jupiter debit card?,"Yes, you will get SMS alerts with transaction details every time a transaction is made on your debit card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_85,How can I set a PIN for my Jupiter Debit Card?,"You can set/ reset your Debit Card PIN by clicking on ""PIN"" on the Card tab on the app.
+
+Change Debit Card PIN: https://app.jupiter.money/debit-card/home",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_86,Do I need to submit a One Time Password (OTP) for every online purchase or transaction made on my Jupiter debit card?,"Yes, One Time password (OTP) is mandatory for all online purchases or transactions made on debit cards in India. For transactions outside India, OTP validation is not mandatoy and will be done if the merchant supports it.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_87,What do I do if my Jupiter Debit Card is not working at a particular merchant website or POS device?,"Please re-attempt the transaction after reseting the Debit Card PIN by navigating to Home -> Debit Card -> Advanced Card Settings -> Reset PIN
+
+To do this now, click here: https://app.jupiter.money/debit-card/home?showAdvanceSettings=true
+
+If the issue is still persists, we request you to please block your card and raise a request to reissue your Jupiter Debit Card through the Jupiter app. Block your current card by navigating to Home -> Debit Card -> Advanced Card Settings -> Block Card -> Block. For placing a request for re-issue of debit card click on Home -> Debit Card -> Apply for new Card.
+
+If the issue is still persists with the new card, please connect with our support agent.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_88,What is 'Sleep Mode' on my Jupiter debit card?,"Sleep mode disables any transactions on your debit card every night from 12 AM-6 AM. When you enable 'sleep mode' it reduces the risk of any fraudulent transactions on your card so you can sleep peacefully.
+
+To do this now, Click here: https://app.jupiter.money/debit-card/sleep-info",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_89,What can I do if I haven't received a refund for my Jupiter Debit Card transaction?,"Don't worry! Your money is completely safe. It takes up to 10 working days to process Debit Card refunds.
+
+If you don't receive your refund after 10 working days, please chat with our experts.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_90,I am not able to use my Jupiter Debit Card on crypto exchanges like Binance. What should I do?,Jupiter debit cards are not allowed in any of the crypto-exchanges.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_91,What are the charges if a purchase transaction declines on my Jupiter Debit Card?,"For any purchase transaction declined due to Insufficient funds, Invalid CVV, Transaction Channel Deactivated, Withdrawal Limit Exceeded, Blocked Card, Incorrect PIN or Blocked due to Excessive PIN tries,
+
+The following charges will be levied -
+No charges for the first 2 transaction declines.
+?100/instance for repeat declines with the same error in a calendar month.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_92,Why is my Jupiter Debit Card not working at an ATM?,"We're sorry to hear that! Jupiter Debit Cards work on all VISA-supported ATMs. Please check your transaction SMS to know why your transaction was declined.
+
+Common decline reasons include incorrect PIN, frozen or blocked cards, insufficient funds or transaction channel disabled.
+
+Jupiter supported ATMs: https://jupiter.money/atms-supported/",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_93,What do I do if I see a suspicious or unauthorized transaction on my Jupiter debit card?,"If you see an unknown or suspicious transaction on your debit card, please block your card immediately here. And please connect with our expert for further assistance.
+
+Block Debit Card: https://app.jupiter.money/debit-card/advance-card-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_94,Can I pause a subscription or Auto-Pay registered on my Jupiter debit card?,"Yes, you can pause the recurring/future payments on the app. Once paused, the subsequent due payment will not get processed, and your account will not get debited. To reverse this, you can resume the Auto-Pay.
+
+
+
+To pause/resume any Auto-Pay, go to: Card -->Settings -> Manage Auto-Pay.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_95,How can I change the daily transaction limits on my Jupiter debit card?,"You can change the daily transaction limits on your debit card by navigating to Card-->Settings-->Manage Daily Limits.
+
+To do this now, click here: https://app.jupiter.money/debit-card/daily-limits",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_96,How can I track transactions on my Jupiter debit card?,"You can view all transactions done on your account including the ones on your debit card under ""Recent Transactions"" on the home page.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_97,The payment of my recurring/subsequent transaction registered on my Jupiterdebit card has failed. What do I do?,"If the payment due on the recurring transaction has failed, your service might be put on hold. You will have to contact the merchant for renewing your service/subscription.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_98,What do I do if a transaction on my debit card failed but money was deducted from my account?,"Do not worry. We suggest that you wait for 5 working days after the date of the transaction to get a refund.
+
+We would like to inform you that there is a procedure that every bank follows for the refund process, that's the reason we usually ask for 5 Working days, in this period we work on the refund process and try to refund it as soon as possible.
+
+After 5 days If you haven't received a refund, chat with our expert",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_99,How can I activate/deactivate different types of transactions on my Jupiter debit card?,"You can activate/deactivate different types of transactions (ATM, Point-of-sale, Contactless or Online) for domestic and international usage by navigating to Card --> Settings --> Manage Transactions.
+
+Manage Transactions: https://app.jupiter.money/debit-card/transaction-settings",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_100,What can I do if my Jupiter Debit Card is blocked after I've entered an incorrect PIN thrice in a row?,"Don't worry! In such a scenario your Jupiter Debit Card will be temporarily blocked till midnight due to security concerns. 
+
+Your Card will be automatically unblocked after midnight. You can reset your Debit Card PIN via the 'Card' tab.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_101,Why did my Jupiter Debit Card transaction get declined?,"We're sorry to hear that! Please check your transaction SMS to know why your Debit Card transaction was declined.
+
+Common decline reasons include incorrect PIN, frozen or blocked cards, insufficient funds, and disabled payment channels.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_102,What are eligible spends for the purpose of waiving off the annual fee on the Jupiter debit card?,"All successful domestic and international non-ATM debit card spends will qualify except Credit Card, loan repayments, online gaming, wallet transactions, etc.
+
+Transactions Excluded: https://jupiter.money/terms-and-conditions/#debit-cards",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_103,How can I track the delivery status of my Jupiter Debit Card?,"You can track the delivery status of your Debit Card on the 'Card' tab. We also share delivery updates via SMS on your registered mobile number.
+
+The tracking link will be available within 3 working days of placing the request.
+
+Check debit card delivery status: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_104,What are the charges of a Jupiter Debit Card?,"There are no issuance or annual charges for a Virtual Debit Card. However, you will be levied with a one time Card Fee of Rs. 300 (exclusive of GST) when you apply for a Debit cum ATM Card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_105,What are the charges for replacement of a Jupiter debit card?,"There are no charges for the replacement of Virtual Debit Card. However, you will be levied with a one-time Card Fee of Rs.300 (exclusive of GST) if you re-apply for a Debit cum ATM Card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_106,If I block my Jupiter debit card will my Jupiter debit card tokens remain active?,"If you block your Jupiter Debit Card, all active tokens linked to your card will be permanently deleted & your card will be unsaved with the specific merchant within 24 hours. You will have to save your new Jupiter Debit Card details with the merchant on your next transaction.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_107,Can my Jupiter Debit Card be delivered to an address different from my communication address?,"Yes, you can change the shipping address for delivery while placing order for your Jupiter Debit plus ATM Card
+
+Order physical debit card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_108,What can I do if I've forgotten my Jupiter Debit Card PIN?,"Don't worry! You can easily change your Debit Card PIN by clicking on ""PIN"" on the Card tab on the app.
+
+Change Debit Card PIN: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_109,I have successfully paid the Debit Card fee but have not received the tracking details for my physical debit card?,"You will receive the tracking details of your physical debit card once the card is dispatched.
+
+Tracking details: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_110,Do I need to complete full KYC to get a Jupiter debit card?,"No, you can get your debit card before you complete your full KYC.
+
+You start with a virtual debit card which can be used for online shopping when you open an account with Jupiter. You can also apply for a physical card to make offline purchases & to withdraw cash from any ATMs, within & outside India.
+
+Get a Physical debit card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_111,Can I modify any Auto-Pay via my debit card on the app?,"Yes, you can modify the Auto-Pay on the app.
+
+You will be able to modify the maximum amount and end date of the subscription. You can also Cancel or Pause the Auto-Pay.
+
+You can do the same by navigating to Cards --> Settings --> Manage Auto-Pay and select the subscription you want to modify.
+
+To do this now, click here: https://app.jupiter.money/auto-pay/all-subscriptions",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_112,Will Auto-Pay remain active if I block my Jupiter debit card?,"No, the Auto-Pay will be cancelled if you block your Jupiter Debit Card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_113,Can the Jupiter debit card annual fee be waived off?,"The annual fee will be waived off if:
+
+- You make eligible spends of minimum Rs. 25,000 in the preceding one year, or
+- You are a PRO or Salary Account member for any 6 months or more during the preceding 12 months",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_114,How will the annual fee be charged on Jupiter debit card?,The Jupiter debit card annual fee will be auto-debited from your Savings Account.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_115,Is it safe for merchant to store the token details linked to my Jupiter debit card?,The merchant will not save your Jupiter debit card details and just save the token details linked to your card. This ensure enhanced security to prevent your card from any data misuse,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_116,How do I report a lost or stolen card?,"If your card has been lost or stolen, please call us on 08655055086 or chat with our experts for further assistance.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_117,What are the annual charges for a Debit Card?,An annual fee of Rs. 199 (excluding GST) will be levied after 12 months of first card issuance date and once every year after that.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_118,What are the charges for international transactions on my Jupiter Debit Card?,"Forex fee depends on your account status:
+
+- Savings Account - 3.5% forex fees on all ATM and non-ATM transactions
+- PRO Account - 0% forex fees up to ?25,000 for non-ATM transactions; 3.5% forex fees on all ATM transactions
+- Salary Account - 0% forex fees up to ?1,00,000 per month for non-ATM transactions; 3.5% forex fees on all ATM transactions
+
+The Forex charges will be levied instantly on all international transactions and will be reversed, if applicable, on a weekly basis. Forex fee (for all users) levied on ATM transactions will not be reversed
+
+Dynamic Currency Conversion (DCC) charges: You will be charged 1% DCC charges exclusive of GST on all international transactions if the spend is deducted in INR.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_119,Are there any charges for ATM withdrawals on my Jupiter Debit Card?,"Domestic Transactions:
+- Unlimited free transactions at Federal Bank ATMs nationwide
+- Basic & Pro users: 5 free transactions per month at non-Federal ATMs in metros, 3 free transactions per month in non-metros
+- Salary users: 10 free transactions per month at non-Federal ATMs
+- Once the free transactions at non-Federal ATMs are used, you will be charged ?21 for cash withdrawal and ?11 for non-financial transactions, exclusive of GST
+
+International ATM transactions are chargeable at ?100, exclusive of GST.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_120,How can I get a new physical Jupiter Debit Card if my old card was lost/ got stolen?,"You can request a new Debit cum ATM Card by navigating to the 'Card' tab on the app. You will have to block your existing card before applying for a new one.
+
+Request new Debit Card: https://app.jupiter.money/debit-card/home?showAdvanceSettings=true",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_121,Is Single Click Payment on my Jupiter Debit Card available on all e-commerce merchants?,"Currently, Single Click Payments is not available on your Jupiter Debit Card.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_122,I am unable to register my card for Single Click Payments ?,"Currently, single-click payments is not available on any merchant and hence, you will not be able to see the option on any merchant.",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_123,How can I get my Jupiter Debit Card dispatched again?,"If you're eligible, you can place a re-dispatch request for a physical Debit Card by clicking on the bottom banner on the 'Card' tab.
+
+Note that the Debit Card will be re-dispatched to the address entered when placing the initial Debit Card request.
+
+Re-dispatch debit card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_124,Can I cancel/pause an Auto-Pay or subscription registered on my Jupiter Debit Card?,"Yes! You can cancel/pause an Auto-Pay anytime. Once cancelled, future payments will not be processed and your service/ subscription will be cancelled.
+
+Go to the 'Cards' tab --> Settings -> Manage Auto-Pay",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_125,How do I unfreeze my Jupiter debit card?,"You can unfreeze your debit card by navigating to the Card section and select the ""Unfreeze"" option.
+
+Unfreeze Debit Card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_126,What is Auto-Pay on Jupiter Debit Card?,You can set Auto-Pay while purchasing any online subscription through your Jupiter Debit Card. The future payments will be auto-debited from your card.,Chat Scripts,Email Scripts,Voice Scripts,,,
+DC_127,Can I upgrade from a virtual to a Jupiter Debit cum ATM Card?,"Yes! You can upgrade to a physical Debit Card by placing the order via the 'Card' tab. A one-time fee of ?300 (plus GST) will be levied for ordering your physical Jupiter Debit Card
+
+To upgrade, navigate to the 'Card' tab ->Settings -> Select 'Order a Physical Debit Card'
+
+Upgrade to physical debit card: https://app.jupiter.money/cards?cardType=debit-card",Chat Scripts,Email Scripts,Voice Scripts,,,
