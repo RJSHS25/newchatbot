@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-# --- 1. Page Config & CSS ---
+# --- 1. Page Config & Styles ---
 st.set_page_config(layout="wide", page_title="TechM GuruCool Prototype")
 
 st.markdown("""
@@ -23,12 +23,10 @@ st.markdown("""
         background: #0078d4; color: white; padding: 10px;
         border-radius: 10px 10px 0 0; font-weight: bold; margin: -10px -10px 10px -10px;
     }
-    /* Fixed height for chat display */
-    .chat-container { height: 400px; overflow-y: auto; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. NLP Setup ---
+# --- 2. NLP & Context Setup ---
 @st.cache_resource
 def setup_nltk():
     try:
@@ -46,7 +44,7 @@ def tfidf_preprocess(text):
     tokens = [lemmatizer.lemmatize(t) for t in text.split() if t not in ENGLISH_STOP_WORDS]
     return " ".join(tokens)
 
-# --- 3. FAQ Bot Engine ---
+# --- 3. FAQ Bot Engine with Memory ---
 class FAQBot:
     def __init__(self, df):
         self.df = df
@@ -56,9 +54,14 @@ class FAQBot:
         self.vectorizer = TfidfVectorizer(preprocessor=tfidf_preprocess, ngram_range=(1, 3))
         self.vectors = self.vectorizer.fit_transform(df['Question'].astype(str))
 
-    def search(self, query, top_n=3):
+    def search(self, query, context_q="", top_n=3):
         if self.df.empty or self.vectorizer is None: return []
-        query_vec = self.vectorizer.transform([query])
+        
+        # CONVERSATIONAL LOGIC: Merge current query with previous context if it's short
+        # (e.g., "How to open one?" + "Savings Account")
+        combined_query = f"{context_q} {query}" if context_q else query
+        
+        query_vec = self.vectorizer.transform([combined_query])
         sims = cosine_similarity(query_vec, self.vectors).flatten()
         indices = sims.argsort()[-top_n:][::-1]
         
@@ -78,22 +81,23 @@ class FAQBot:
 def load_data():
     if os.path.exists("data.csv"):
         return pd.read_csv("data.csv")
-    # Minimal fallback so the app doesn't crash
-    return pd.DataFrame({'Question': ['Sample?'], 'Answer': ['Sample Answer.']})
+    return pd.DataFrame({'Question': ['Example?'], 'Answer': ['Example Answer.']})
 
 df_qa = load_data()
 bot = FAQBot(df_qa)
 
-# --- 5. Session State ---
+# --- 5. Session State (The "Brain") ---
 if 'messages' not in st.session_state:
     st.session_state.messages = []
+if 'last_topic' not in st.session_state:
+    st.session_state.last_topic = ""
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
-# --- 6. Prototype Login ---
+# --- 6. Login ---
 if not st.session_state.authenticated:
     st.title("🚀 GuruCool Prototype")
-    email = st.text_input("Enter Email to start:")
+    email = st.text_input("Enter Email:")
     if st.button("Login"):
         if "@" in email:
             st.session_state.authenticated = True
@@ -101,62 +105,62 @@ if not st.session_state.authenticated:
             st.rerun()
     st.stop()
 
-# --- 7. Sidebar & Main UI ---
-with st.sidebar:
-    st.title("Settings")
-    if st.button("Clear History"):
-        st.session_state.messages = []
-        st.rerun()
-
+# --- 7. Main Dashboard UI ---
 st.title("🗺️ Maps Knowledge Portal")
-st.info(f"Welcome, {st.session_state.user_email}")
+st.info(f"Conversational Mode Active | User: {st.session_state.user_email}")
 
-# --- 8. Floating Chatbot Logic ---
+# --- 8. Floating Chatbot ---
 st.markdown('<div class="floating-chat">', unsafe_allow_html=True)
 st.markdown('<div class="bot-header">🪐 GuruCool AI Support</div>', unsafe_allow_html=True)
 
 chat_box = st.container(height=380)
 
-# Render Chat History
+# Display Chat History
 for m in st.session_state.messages:
     with chat_box.chat_message(m["role"]):
         st.markdown(m["content"])
 
 # Chat Input Processing
-if prompt := st.chat_input("Ask about savings, mapping, etc..."):
-    # 1. Show User Message
+if prompt := st.chat_input("Ask me a question..."):
+    # Show User Input
     st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # 2. Search for answer
-    results = bot.search(prompt)
+    # SEARCH WITH CONTEXT
+    results = bot.search(prompt, context_q=st.session_state.last_topic)
     
-    # 3. Determine Response
     if results:
-        # Check for High Confidence Match
-        if results[0]['score'] > 0.7:
-            # DIRECT ANSWER: Pulls from "Answer" column
-            answer_text = f"**{results[0]['q']}**\n\n{results[0]['a']}"
+        # High Confidence Match
+        if results[0]['score'] > 0.55:
+            res = results[0]
+            answer_text = f"**{res['q']}**\n\n{res['a']}"
             st.session_state.messages.append({"role": "assistant", "content": answer_text})
+            # UPDATE MEMORY: Remember this topic for follow-up
+            st.session_state.last_topic = res['q']
         else:
-            # SUGGESTIONS
-            options_text = "I found a few similar topics. Please click the most relevant one:"
-            st.session_state.messages.append({"role": "assistant", "content": options_text})
-            # We store the results temporarily to render buttons
+            # Low Confidence: Show options
+            st.session_state.messages.append({"role": "assistant", "content": "I'm not 100% sure, but are you asking about one of these?"})
             st.session_state.temp_results = results
     else:
-        st.session_state.messages.append({"role": "assistant", "content": "I'm sorry, I couldn't find a match for that. Can you rephrase?"})
+        st.session_state.messages.append({"role": "assistant", "content": "I couldn't find a match. Could you try rephrasing?"})
+        st.session_state.last_topic = "" # Clear memory if search fails
     
     st.rerun()
 
-# Render Suggestion Buttons (if any)
+# Handle Button Clicks (Options)
 if 'temp_results' in st.session_state and st.session_state.temp_results:
     with chat_box.chat_message("assistant"):
         for r in st.session_state.temp_results:
             if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
-                # On Click: Append the ANSWER column text to history
                 final_answer = f"**{r['q']}**\n\n{r['a']}"
                 st.session_state.messages.append({"role": "assistant", "content": final_answer})
-                st.session_state.temp_results = [] # Clear suggestions
+                # UPDATE MEMORY: Remember this selection
+                st.session_state.last_topic = r['q']
+                st.session_state.temp_results = []
                 st.rerun()
+
+if st.button("Clear History"):
+    st.session_state.messages = []
+    st.session_state.last_topic = ""
+    st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
