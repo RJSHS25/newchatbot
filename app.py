@@ -78,22 +78,30 @@ df_kb = load_and_prep_data()
 def get_combined_matches(query, dataframe, top_n=3):
     if dataframe.empty: return []
     
-    # 1. Try Fuzzy Matching first (Great for typos)
+    # 1. Fuzzy Matching
     choices = dataframe['Topic'].tolist()
-    # Extract matches (returns list of tuples: (text, score, index))
+    # process.extract returns list of (string, score) or (string, score, index)
     fuzzy_results = process.extract(query, choices, scorer=fuzz.token_set_ratio, limit=top_n)
     
     results = []
-    for match_text, score, idx in fuzzy_results:
-        if score > 75:  # High confidence fuzzy match
-            results.append({
-                "score": score / 100, 
-                "q": dataframe.iloc[idx]['Topic'], 
-                "a": dataframe.iloc[idx]['Description'],
-                "idx": idx
-            })
+    for match in fuzzy_results:
+        # Robust unpacking: handle different versions of fuzzywuzzy/thefuzz
+        match_text = match[0]
+        score = match[1]
+        
+        if score > 75:
+            # Find the index in the original dataframe where the Topic matches
+            idx_list = dataframe.index[dataframe['Topic'] == match_text].tolist()
+            if idx_list:
+                idx = idx_list[0]
+                results.append({
+                    "score": score / 100, 
+                    "q": dataframe.iloc[idx]['Topic'], 
+                    "a": dataframe.iloc[idx]['Description'],
+                    "idx": idx
+                })
 
-    # 2. If Fuzzy didn't find a perfect match, use NLP (TF-IDF) for context
+    # 2. NLP (TF-IDF) Fallback
     if not results or results[0]['score'] < 0.8:
         vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
@@ -103,7 +111,6 @@ def get_combined_matches(query, dataframe, top_n=3):
         nlp_indices = cosine_sim.argsort()[-top_n:][::-1]
         for idx in nlp_indices:
             if cosine_sim[idx] > 0.1:
-                # Avoid duplicates from fuzzy
                 if not any(r['q'] == dataframe.iloc[idx]['Topic'] for r in results):
                     results.append({
                         "score": cosine_sim[idx], 
@@ -179,9 +186,9 @@ else:
             if clean_p in small_talk:
                 st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
             else:
+                # This is the line that was crashing
                 results = get_combined_matches(prompt, df_kb)
                 if results:
-                    # Confidence threshold: Fuzzy is 0-1 (scaled), NLP is 0-1
                     if results[0]['score'] > 0.7:
                         log_usage(results[0]['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
