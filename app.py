@@ -13,19 +13,26 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 st.set_page_config(layout="wide", page_title="TechM Maps Portal")
 
-# CSS: Improved to anchor the bot column and clean up the input
+# CSS: Anchors the app and removes global chat input overflow
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
+    
+    /* Dedicated styling for the Right Pane */
     .right-pane {
         border-left: 1px solid #dee2e6;
         padding: 20px;
         background-color: #ffffff;
-        min-height: 90vh;
+        min-height: 100vh;
     }
-    /* This makes sure chat elements don't overflow the column */
+
+    /* Fix to prevent chat input from jumping to page bottom */
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Ensures the column doesn't create extra scrollbars */
     [data-testid="column"] {
-        overflow: hidden;
+        overflow: unset;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -70,7 +77,7 @@ def load_and_prep_data():
         df = pd.read_csv(file_path)
     else:
         df = pd.DataFrame(columns=['Topic', 'Description'])
-        df.loc[0] = ["Sample", "Please upload knowledge_base.csv to see real data."]
+        df.loc[0] = ["Sample", "Knowledge base not found."]
     
     if 'Question' in df.columns:
         df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
@@ -93,7 +100,7 @@ def get_matches_nlp(query, dataframe, top_n=3):
     return results
 
 # ===============================
-# ⬅️ SIDEBAR (Analytics Only)
+# ⬅️ SIDEBAR
 # ===============================
 with st.sidebar:
     st.title("🧭 Navigation")
@@ -112,11 +119,8 @@ if nav_choice == "📊 Analytics":
         df_logs = pd.read_csv("usage_logs.csv")
         st.bar_chart(df_logs['Question'].value_counts().head(10))
         st.dataframe(df_logs, use_container_width=True)
-    else:
-        st.info("No logs yet.")
-
 else:
-    # THE CORE LAYOUT
+    # THE CORE LAYOUT: Content (Left) | Bot (Right)
     main_col, bot_col = st.columns([0.7, 0.3])
 
     with main_col:
@@ -129,36 +133,35 @@ else:
         if d2.button("Polygon", use_container_width=True): st.info("Opening Polygon...")
         if d3.button("Signals", use_container_width=True): st.info("Opening Signals...")
 
-    # --- RIGHT SIDE BOT (The ONLY Input) ---
+    # --- THE RIGHT SIDE BOT ---
     with bot_col:
         st.markdown('<div class="right-pane">', unsafe_allow_html=True)
         st.subheader("🪐 GuruCool AI")
         
-        # We wrap the history and input in a specific container logic
-        history_placeholder = st.container(height=500)
+        # Container for messages (height makes it scrollable)
+        history_box = st.container(height=500)
         
-        with history_placeholder:
+        with history_box:
             for m in st.session_state.messages:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
             
-            # Clickable Suggestions
+            # Suggestions
             if st.session_state.temp_results:
                 for r in st.session_state.temp_results:
-                    if st.button(f"👉 {r['q']}", key=f"sug_{r['idx']}"):
+                    if st.button(f"👉 {r['q']}", key=f"sug_btn_{r['idx']}"):
                         log_usage(r['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
                         st.session_state.temp_results = []
                         st.rerun()
 
-        # BY NESTING THIS INSIDE 'with bot_col', it stays in the right pane.
-        # DO NOT call st.chat_input anywhere else in the code.
-        if prompt := st.chat_input("Ask GuruCool..."):
+        # The Chat Input is placed here - locked to the column
+        if prompt := st.chat_input("Ask GuruCool...", key="bot_input"):
             st.session_state.temp_results = []
             st.session_state.messages.append({"role": "user", "content": prompt})
             
             clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
-            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "Welcome!"}
+            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "You're welcome!"}
             
             if clean_p in small_talk:
                 st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
@@ -169,13 +172,13 @@ else:
                         log_usage(results[0]['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
                     else:
-                        st.session_state.messages.append({"role": "assistant", "content": "I found these similar topics:"})
+                        st.session_state.messages.append({"role": "assistant", "content": "Related topics:"})
                         st.session_state.temp_results = results
                 else:
-                    st.session_state.messages.append({"role": "assistant", "content": "I'm not sure. Try another keyword."})
+                    st.session_state.messages.append({"role": "assistant", "content": "I couldn't find a match."})
             st.rerun()
 
-        if st.button("Clear Chat", key="clear_bot"):
+        if st.button("Clear Chat", key="reset_chat"):
             st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool."}]
             st.session_state.temp_results = []
             st.rerun()
