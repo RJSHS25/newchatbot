@@ -13,22 +13,24 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 st.set_page_config(layout="wide", page_title="TechM Maps Portal")
 
-# Custom CSS for UI Aesthetics (Removed Floating Bot CSS)
+# CSS: This ensures the right pane is fixed and aesthetically distinct
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
     .right-pane {
         border-left: 1px solid #dee2e6;
-        padding-left: 25px;
-        height: 100vh;
+        padding-left: 20px;
         background-color: #ffffff;
+        min-height: 100vh;
     }
     .main-title { color: #0078d4; font-weight: bold; }
-    hr { margin-top: 1rem; margin-bottom: 1rem; }
+    /* Fixes the chat input to stay inside the right column */
+    [data-testid="stChatInput"] {
+        width: 100%;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# Initialize Session States
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 if "messages" not in st.session_state:
@@ -41,14 +43,12 @@ if 'temp_results' not in st.session_state:
 # ===============================
 if not st.session_state.authenticated:
     st.title("🔐 TechM Portal Login")
-    email = st.text_input("Enter Email to start:")
+    email = st.text_input("Enter Email:")
     if st.button("Login"):
         if "@" in email:
             st.session_state.authenticated = True
             st.session_state.user_email = email
             st.rerun()
-        else:
-            st.error("Please enter a valid email.")
     st.stop()
 
 # ===============================
@@ -70,12 +70,11 @@ def load_and_prep_data():
     if os.path.exists(file_path):
         df = pd.read_csv(file_path)
     else:
-        df = pd.DataFrame(columns=['Topic', 'Description', 'Category'])
-        df.loc[0] = ["Linear", "Linear mapping relates to road lines and lanes.", "Linear"]
-        
-    if 'Question' in df.columns and 'Topic' not in df.columns:
+        df = pd.DataFrame(columns=['Topic', 'Description'])
+        df.loc[0] = ["Sample", "Please upload knowledge_base.csv to see real data."]
+    
+    if 'Question' in df.columns:
         df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
-        
     df['profile'] = df['Topic'].fillna('') + " " + df['Description'].fillna('')
     return df
 
@@ -87,24 +86,19 @@ def get_matches_nlp(query, dataframe, top_n=3):
     tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
     query_vec = vectorizer.transform([query])
     cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
-    
     indices = cosine_sim.argsort()[-top_n:][::-1]
     results = []
     for idx in indices:
-        score = cosine_sim[idx]
-        if score > 0.1:
-            results.append({"idx": idx, "score": score, "q": dataframe.iloc[idx]['Topic'], "a": dataframe.iloc[idx]['Description']})
+        if cosine_sim[idx] > 0.1:
+            results.append({"idx": idx, "score": cosine_sim[idx], "q": dataframe.iloc[idx]['Topic'], "a": dataframe.iloc[idx]['Description']})
     return results
 
 # ===============================
-# ⬅️ LEFT SIDEBAR (Navigation)
+# ⬅️ SIDEBAR (Analytics Only)
 # ===============================
 with st.sidebar:
     st.title("🧭 Navigation")
-    st.write(f"👤 **User:** {st.session_state.user_email}")
-    st.divider()
-    nav_choice = st.radio("Switch View:", ["🏠 Dashboard", "📊 Usage Analytics"])
-    st.divider()
+    nav_choice = st.radio("View:", ["🏠 Dashboard", "📊 Analytics"])
     if st.button("Logout"):
         st.session_state.authenticated = False
         st.rerun()
@@ -112,81 +106,59 @@ with st.sidebar:
 # ===============================
 # 🏗️ MAIN CONTENT AREA
 # ===============================
-if nav_choice == "📊 Usage Analytics":
+if nav_choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
-        try:
-            df_logs = pd.read_csv("usage_logs.csv", on_bad_lines='skip')
-            if not df_logs.empty:
-                c1, c2 = st.columns(2)
-                with c1:
-                    st.subheader("Top Topics Queried")
-                    st.bar_chart(df_logs['Question'].value_counts().head(10))
-                with c2:
-                    st.subheader("Most Active Users")
-                    st.write(df_logs['User'].value_counts())
-                st.divider()
-                st.dataframe(df_logs.sort_values(by='Timestamp', ascending=False), use_container_width=True)
-        except:
-            st.error("Error reading logs.")
+        df_logs = pd.read_csv("usage_logs.csv")
+        st.bar_chart(df_logs['Question'].value_counts().head(10))
+        st.dataframe(df_logs, use_container_width=True)
     else:
-        st.warning("No usage recorded yet.")
+        st.info("No logs yet.")
 
 else:
+    # THE CORE LAYOUT: Main Content (Left 70%) | Bot (Right 30%)
     main_col, bot_col = st.columns([0.7, 0.3])
 
     with main_col:
         st.markdown("<h2 class='main-title'>🗺️ Maps Knowledge Portal</h2>", unsafe_allow_html=True)
         st.divider()
         st.video("https://www.youtube.com/watch?v=hA_-MkU0Nfw")
-        st.markdown("### 🚀 Choose Your Domain")
+        st.markdown("### 🚀 Domains")
         d1, d2, d3 = st.columns(3)
-        domain_data = [
-            {"name": "Linear", "col": d1, "img": "images/linear.png", "path": "pages/1_Linear.py"},
-            {"name": "Polygon", "col": d2, "img": "images/polygon.png", "path": "pages/2_Polygon.py"},
-            {"name": "Signals", "col": d3, "img": "images/signals.png", "path": "pages/3_Signals.py"}
-        ]
-        for dom in domain_data:
-            with dom["col"]:
-                if os.path.exists(dom["img"]):
-                    st.image(dom["img"], use_container_width=True)
-                st.subheader(dom["name"])
-                if st.button(f"Open {dom['name']}", key=dom['name']):
-                    st.switch_page(dom["path"])
+        # Assuming you have sub-pages ready
+        if d1.button("Linear"): st.info("Opening Linear...")
+        if d2.button("Polygon"): st.info("Opening Polygon...")
+        if d3.button("Signals"): st.info("Opening Signals...")
 
-    # RIGHT SIDEBAR CHATBOT
+    # --- THE ONLY BOT SECTION ---
     with bot_col:
         st.markdown('<div class="right-pane">', unsafe_allow_html=True)
-        st.subheader("🪐 GuruCool Support")
+        st.subheader("🪐 GuruCool AI")
         
-        small_talk = {
-            "hi": "Hello! How can I help you today?",
-            "hello": "Hi there! What are you looking for in the portal?",
-            "thanks": "You're welcome!",
-            "thank you": "Happy to help!"
-        }
-
-        chat_box = st.container(height=500)
+        # 1. Chat History Area
+        chat_box = st.container(height=550)
         with chat_box:
             for m in st.session_state.messages:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
-
-            # Render Suggestions Buttons
+            
+            # Suggestion Buttons
             if st.session_state.temp_results:
-                st.info("Please select the most relevant topic:")
                 for r in st.session_state.temp_results:
-                    if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
+                    if st.button(f"👉 {r['q']}", key=f"suggest_{r['idx']}"):
                         log_usage(r['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
                         st.session_state.temp_results = []
                         st.rerun()
 
+        # 2. THE ONLY CHAT INPUT
         if prompt := st.chat_input("Ask GuruCool..."):
             st.session_state.temp_results = []
             st.session_state.messages.append({"role": "user", "content": prompt})
             
+            # Small Talk Check
             clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
+            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "Welcome!"}
             
             if clean_p in small_talk:
                 st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
@@ -197,15 +169,14 @@ else:
                         log_usage(results[0]['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
                     else:
-                        st.session_state.messages.append({"role": "assistant", "content": "I found these related topics:"})
+                        st.session_state.messages.append({"role": "assistant", "content": "I found these similar topics:"})
                         st.session_state.temp_results = results
                 else:
-                    st.session_state.messages.append({"role": "assistant", "content": "I'm not sure. Try asking about Linear or Polygon mapping."})
+                    st.session_state.messages.append({"role": "assistant", "content": "I'm not sure. Try another keyword."})
             st.rerun()
 
-        if st.button("Clear History", use_container_width=True):
-            st.session_state.messages = [{"role": "assistant", "content": "Hi! How can I help?"}]
+        if st.button("Clear Chat", use_container_width=True):
+            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool."}]
             st.session_state.temp_results = []
             st.rerun()
-            
         st.markdown('</div>', unsafe_allow_html=True)
