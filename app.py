@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import os
 import csv
+import string
+import nltk
 from datetime import datetime
 from fuzzywuzzy import fuzz
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -12,40 +14,47 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 st.set_page_config(layout="wide", page_title="TechM Maps Portal")
 
+# Custom CSS for UI Aesthetics
+st.markdown("""
+    <style>
+    .stApp { background-color: #f8f9fa; }
+    .right-pane {
+        border-left: 1px solid #dee2e6;
+        padding-left: 25px;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+    /* Style headers and dividers */
+    .main-title { color: #0078d4; font-weight: bold; }
+    hr { margin-top: 1rem; margin-bottom: 1rem; }
+    </style>
+    """, unsafe_allow_html=True)
+
+# Initialize Session States
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 if "messages" not in st.session_state:
     st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool. How can I help you today?"}]
-
-# Custom CSS for Right Pane Aesthetics
-st.markdown("""
-    <style>
-    .right-pane {
-        border-left: 1px solid #dee2e6;
-        padding-left: 20px;
-        height: 100%;
-    }
-    .stChatFloatingInputContainer {
-        bottom: 20px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+if 'temp_results' not in st.session_state:
+    st.session_state.temp_results = []
 
 # ===============================
 # 🔐 AUTHENTICATION
 # ===============================
 if not st.session_state.authenticated:
     st.title("🔐 TechM Portal Login")
-    email = st.text_input("Email")
+    email = st.text_input("Enter Email to start:")
     if st.button("Login"):
         if "@" in email:
             st.session_state.authenticated = True
             st.session_state.user_email = email
             st.rerun()
+        else:
+            st.error("Please enter a valid email.")
     st.stop()
 
 # ===============================
-# 📄 LOGGING & NLP ENGINE
+# 📄 DATA & NLP ENGINE
 # ===============================
 def log_usage(question, user_email):
     log_file = "usage_logs.csv"
@@ -59,11 +68,19 @@ def log_usage(question, user_email):
 
 @st.cache_data
 def load_and_prep_data():
-    # Load knowledge_base.csv or data.csv
-    if os.path.exists("knowledge_base.csv"):
-        df = pd.read_csv("knowledge_base.csv")
+    # Attempt to load knowledge_base.csv (or your data.csv)
+    file_path = "knowledge_base.csv" if os.path.exists("knowledge_base.csv") else "data.csv"
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
     else:
         df = pd.DataFrame(columns=['Topic', 'Description', 'Category'])
+        # Fallback if no file exists
+        df.loc[0] = ["Linear", "Linear mapping relates to road lines and lanes.", "Linear"]
+        
+    # Ensure standard column names for searching
+    if 'Question' in df.columns and 'Topic' not in df.columns:
+        df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
+        
     df['profile'] = df['Topic'].fillna('') + " " + df['Description'].fillna('')
     return df
 
@@ -78,6 +95,7 @@ def get_best_match_nlp(query, dataframe):
     best_idx = cosine_sim.argsort()[-1]
     highest_score = cosine_sim[best_idx]
     
+    # Fallback to Fuzzy Logic for conversational or low-score queries
     if highest_score < 0.2:
         fuzzy_scores = dataframe['profile'].apply(lambda x: fuzz.partial_ratio(query.lower(), str(x).lower()))
         best_idx = fuzzy_scores.idxmax()
@@ -89,43 +107,56 @@ def get_best_match_nlp(query, dataframe):
 # ===============================
 with st.sidebar:
     st.title("🧭 Navigation")
-    st.write(f"👤 {st.session_state.user_email}")
+    st.write(f"👤 **User:** {st.session_state.user_email}")
     st.divider()
     
-    # Internal Navigation Links
-    nav_choice = st.radio("Go to:", ["🏠 Home Dashboard", "📊 Usage Analytics"])
+    nav_choice = st.radio("Switch View:", ["🏠 Dashboard", "📊 Usage Analytics"])
     
     st.divider()
-    st.subheader("Quick Links")
-    st.markdown("- [Company Portal](https://example.com)")
-    st.markdown("- [Maps Documentation](https://example.com)")
+    st.subheader("Support Links")
+    st.markdown("[📋 Company Guidelines](https://example.com)")
+    st.markdown("[🛠️ Tooling Documentation](https://example.com)")
     
     if st.button("Logout"):
         st.session_state.authenticated = False
         st.rerun()
 
 # ===============================
-# 🏗️ MAIN LAYOUT LOGIC
+# 🏗️ MAIN CONTENT AREA
 # ===============================
 
-# 1. SHOW ANALYTICS PAGE
+# PAGE: ANALYTICS
 if nav_choice == "📊 Usage Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
-        df_logs = pd.read_csv("usage_logs.csv")
-        st.bar_chart(df_logs['Question'].value_counts().head(10))
-        st.dataframe(df_logs, use_container_width=True)
+        try:
+            df_logs = pd.read_csv("usage_logs.csv", on_bad_lines='skip')
+            if not df_logs.empty:
+                c1, c2 = st.columns(2)
+                with c1:
+                    st.subheader("Top Topics Queried")
+                    st.bar_chart(df_logs['Question'].value_counts().head(10))
+                with c2:
+                    st.subheader("Most Active Users")
+                    st.write(df_logs['User'].value_counts())
+                st.divider()
+                st.subheader("Recent Search History")
+                st.dataframe(df_logs.sort_values(by='Timestamp', ascending=False), use_container_width=True)
+            else:
+                st.info("Log file is empty.")
+        except:
+            st.error("Error reading logs. File may be corrupted.")
     else:
-        st.info("No data logged yet.")
+        st.warning("No usage recorded yet.")
 
-# 2. SHOW DASHBOARD + RIGHT CHATBOT
+# PAGE: DASHBOARD + RIGHT CHATBOT
 else:
-    # Split the main area into Content (70%) and Chatbot (30%)
+    # 70% Content | 30% Chatbot
     main_col, bot_col = st.columns([0.7, 0.3])
 
     with main_col:
-        st.markdown("## 🗺️ Maps Knowledge Portal")
-        st.markdown("---")
+        st.markdown("<h2 class='main-title'>🗺️ Maps Knowledge Portal</h2>", unsafe_allow_html=True)
+        st.divider()
         st.video("https://www.youtube.com/watch?v=hA_-MkU0Nfw")
         
         st.markdown("### 🚀 Choose Your Domain")
@@ -142,29 +173,44 @@ else:
                     st.image(dom["img"], use_container_width=True)
                 st.subheader(dom["name"])
                 if st.button(f"Open {dom['name']}", key=dom['name']):
-                    st.switch_page(dom["path"])
+                    try:
+                        st.switch_page(dom["path"])
+                    except:
+                        st.error(f"Page '{dom['path']}' not found.")
 
     with bot_col:
         st.markdown('<div class="right-pane">', unsafe_allow_html=True)
         st.subheader("🪐 GuruCool Support")
         
-        chat_box = st.container(height=550)
+        # Small Talk Definitions
+        small_talk = {
+            "hi": "Hello! I'm GuruCool. How can I help you today?",
+            "hello": "Hi there! What can I help you find in the portal?",
+            "thanks": "You're very welcome!",
+            "thank you": "Happy to help!",
+            "how are you": "I'm doing great! Ready to analyze some map data."
+        }
+
+        chat_box = st.container(height=500)
         with chat_box:
             for m in st.session_state.messages:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
 
+        # Process Input
         if prompt := st.chat_input("Ask GuruCool..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
             
-            result, score = get_best_match_nlp(prompt, df_kb)
-            if score > 0.25:
-                log_usage(result['Topic'], st.session_state.user_email)
-                bot_response = f"**{result['Topic']}**\n\n{result['Description']}"
-            else:
-                bot_response = "I couldn't find an exact match. Try 'Linear' or 'Signals'."
-                
-            st.session_state.messages.append({"role": "assistant", "content": bot_response})
-            st.rerun()
+            # Clean prompt for Small Talk check
+            clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
             
-        st.markdown('</div>', unsafe_allow_html=True)
+            if clean_p in small_talk:
+                bot_response = small_talk[clean_p]
+            else:
+                result, score = get_best_match_nlp(prompt, df_kb)
+                
+                if score > 0.15: # Flexible threshold
+                    log_usage(result['Topic'], st.session_state.user_email)
+                    bot_response = f"**{result['Topic']}**\n\n{result['Description']}"
+                else:
+                    bot_response = "I'm not exactly
