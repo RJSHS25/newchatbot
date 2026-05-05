@@ -213,4 +213,13 @@ else:
                     log_usage(result['Topic'], st.session_state.user_email)
                     bot_response = f"**{result['Topic']}**\n\n{result['Description']}"
                 else:
-                    bot_response = "I'm not exactly
+                    bot_response = "I'm not exactly sure about that. Try asking about 'Linear', 'Polygon', or specific mapping tasks."
+            
+            st.session_state.messages.append({"role": "assistant", "content": bot_response})
+            st.rerun()
+
+        if st.button("Clear Chat", use_container_width=True):
+            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool. How can I help?"}]
+            st.rerun()
+            
+        st.markdown('</div>', unsafe_allow_html=True)
