@@ -4,7 +4,7 @@ import os
 import csv
 import string
 from datetime import datetime
-from fuzzywuzzy import fuzz
+from fuzzywuzzy import fuzz, process
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -13,25 +13,16 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 st.set_page_config(layout="wide", page_title="TechM Maps Portal")
 
-# CSS: Cleaned up to prevent layout jumping and "ghost" elements
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
-    
-    /* Styling for the Right Pane container */
     [data-testid="column"]:nth-child(2) {
         border-left: 1px solid #dee2e6;
         padding-left: 20px;
     }
-
-    /* Hide standard Streamlit branding for a cleaner 'Portal' look */
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
-    /* Ensure the chat input doesn't overlap content */
-    .stChatInput {
-        padding-bottom: 20px;
-    }
+    .stChatInput { padding-bottom: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -56,7 +47,7 @@ if not st.session_state.authenticated:
     st.stop()
 
 # ===============================
-# 📄 DATA & NLP ENGINE
+# 📄 DATA & SEARCH ENGINE
 # ===============================
 def log_usage(question, user_email):
     log_file = "usage_logs.csv"
@@ -75,7 +66,7 @@ def load_and_prep_data():
         df = pd.read_csv(file_path)
     else:
         df = pd.DataFrame(columns=['Topic', 'Description'])
-        df.loc[0] = ["Sample", "Knowledge base not found. Please upload knowledge_base.csv"]
+        df.loc[0] = ["Sample", "Knowledge base empty."]
     
     if 'Question' in df.columns:
         df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
@@ -84,17 +75,43 @@ def load_and_prep_data():
 
 df_kb = load_and_prep_data()
 
-def get_matches_nlp(query, dataframe, top_n=3):
+def get_combined_matches(query, dataframe, top_n=3):
     if dataframe.empty: return []
-    vectorizer = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
-    query_vec = vectorizer.transform([query])
-    cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
-    indices = cosine_sim.argsort()[-top_n:][::-1]
+    
+    # 1. Try Fuzzy Matching first (Great for typos)
+    choices = dataframe['Topic'].tolist()
+    # Extract matches (returns list of tuples: (text, score, index))
+    fuzzy_results = process.extract(query, choices, scorer=fuzz.token_set_ratio, limit=top_n)
+    
     results = []
-    for idx in indices:
-        if cosine_sim[idx] > 0.1:
-            results.append({"idx": idx, "score": cosine_sim[idx], "q": dataframe.iloc[idx]['Topic'], "a": dataframe.iloc[idx]['Description']})
+    for match_text, score, idx in fuzzy_results:
+        if score > 75:  # High confidence fuzzy match
+            results.append({
+                "score": score / 100, 
+                "q": dataframe.iloc[idx]['Topic'], 
+                "a": dataframe.iloc[idx]['Description'],
+                "idx": idx
+            })
+
+    # 2. If Fuzzy didn't find a perfect match, use NLP (TF-IDF) for context
+    if not results or results[0]['score'] < 0.8:
+        vectorizer = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
+        query_vec = vectorizer.transform([query])
+        cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
+        
+        nlp_indices = cosine_sim.argsort()[-top_n:][::-1]
+        for idx in nlp_indices:
+            if cosine_sim[idx] > 0.1:
+                # Avoid duplicates from fuzzy
+                if not any(r['q'] == dataframe.iloc[idx]['Topic'] for r in results):
+                    results.append({
+                        "score": cosine_sim[idx], 
+                        "q": dataframe.iloc[idx]['Topic'], 
+                        "a": dataframe.iloc[idx]['Description'],
+                        "idx": idx
+                    })
+    
     return results
 
 # ===============================
@@ -115,12 +132,10 @@ if nav_choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
         df_logs = pd.read_csv("usage_logs.csv")
-        st.bar_chart(df_logs['Question'].value_counts().head(10))
         st.dataframe(df_logs, use_container_width=True)
     else:
         st.info("No logs found yet.")
 else:
-    # THE CORE LAYOUT: Content (Left) | Bot (Right)
     main_col, bot_col = st.columns([0.7, 0.3])
 
     with main_col:
@@ -137,8 +152,6 @@ else:
     # --- THE RIGHT SIDE BOT (GURUCOOL) ---
     with bot_col:
         st.subheader("🪐 GuruCool AI")
-        
-        # Fixed height container for the conversation
         chat_history_container = st.container(height=500)
         
         with chat_history_container:
@@ -146,7 +159,6 @@ else:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
             
-            # Show suggestions if any
             if st.session_state.temp_results:
                 st.write("---")
                 st.caption("Common matches:")
@@ -157,36 +169,30 @@ else:
                         st.session_state.temp_results = []
                         st.rerun()
 
-        # Chat Input (Pinned to the bottom of the column)
         if prompt := st.chat_input("Ask GuruCool...", key="bot_input"):
-            # Add user message
             st.session_state.messages.append({"role": "user", "content": prompt})
             st.session_state.temp_results = []
             
-            # Process response
             clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
-            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "You're welcome!", "bye": "Goodbye!"}
+            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "You're welcome!"}
             
             if clean_p in small_talk:
                 st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
             else:
-                results = get_matches_nlp(prompt, df_kb)
+                results = get_combined_matches(prompt, df_kb)
                 if results:
-                    # If high confidence, give answer directly
-                    if results[0]['score'] > 0.6:
+                    # Confidence threshold: Fuzzy is 0-1 (scaled), NLP is 0-1
+                    if results[0]['score'] > 0.7:
                         log_usage(results[0]['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
                     else:
-                        # If low confidence, show suggestions
-                        st.session_state.messages.append({"role": "assistant", "content": "I found a few related topics. Please click one:"})
+                        st.session_state.messages.append({"role": "assistant", "content": "I found a few related topics:"})
                         st.session_state.temp_results = results
                 else:
-                    st.session_state.messages.append({"role": "assistant", "content": "I'm sorry, I couldn't find a match in the knowledge base."})
-            
+                    st.session_state.messages.append({"role": "assistant", "content": "I couldn't find a match. Could you rephrase?"})
             st.rerun()
 
-        # Utility button
         if st.button("Clear Chat", key="reset_chat", use_container_width=True):
-            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool. How can I help?"}]
+            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool."}]
             st.session_state.temp_results = []
             st.rerun()
