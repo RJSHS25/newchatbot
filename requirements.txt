@@ -1,5 +1,8 @@
 streamlit
 pandas
+google-cloud-storage
+nltk
+scikit-learn
+numpy
 fuzzywuzzy
 python-Levenshtein
-scikit-learn
