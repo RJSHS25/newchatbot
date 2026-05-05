@@ -7,9 +7,9 @@ from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import cosine_similarity
 
-# --- 1. Page Config & CSS ---
-st.set_page_config(layout="wide", page_title="TechM GuruCool Prototype")
+st.set_page_config(layout="wide", page_title="GuruCool AI")
 
+# --- CSS ---
 st.markdown("""
     <style>
     .stApp { background-color: #f4f7f9; }
@@ -26,21 +26,20 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. Logging Function ---
-def log_usage(question):
-    """Saves the question asked to a log file for analytics."""
+# --- 1. Logging (Minimal & Fast) ---
+def log_usage(question, user_email):
     log_file = "usage_logs.csv"
     new_entry = pd.DataFrame({
         'Timestamp': [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+        'User': [user_email],
         'Question': [question]
     })
-    
     if not os.path.isfile(log_file):
         new_entry.to_csv(log_file, index=False)
     else:
         new_entry.to_csv(log_file, mode='a', header=False, index=False)
 
-# --- 3. NLP Setup ---
+# --- 2. FAQ Engine Setup ---
 @st.cache_resource
 def setup_nltk():
     try:
@@ -57,7 +56,6 @@ def tfidf_preprocess(text):
     tokens = [lemmatizer.lemmatize(t) for t in text.split() if t not in ENGLISH_STOP_WORDS]
     return " ".join(tokens)
 
-# --- 4. FAQ Bot Engine ---
 class FAQBot:
     def __init__(self, df):
         self.df = df
@@ -72,29 +70,26 @@ class FAQBot:
         query_vec = self.vectorizer.transform([query])
         sims = cosine_similarity(query_vec, self.vectors).flatten()
         indices = sims.argsort()[-top_n:][::-1]
-        
         results = []
         for i in indices:
             if sims[i] > 0.1:
                 results.append({"idx": i, "score": sims[i], "q": self.df.iloc[i]['Question'], "a": self.df.iloc[i]['Answer']})
         return results
 
-# --- 5. Load Data ---
 @st.cache_data
 def load_data():
-    if os.path.exists("data.csv"):
-        return pd.read_csv("data.csv")
+    if os.path.exists("data.csv"): return pd.read_csv("data.csv")
     return pd.DataFrame({'Question': ['Sample?'], 'Answer': ['Sample Answer.']})
 
 df_qa = load_data()
 bot = FAQBot(df_qa)
 
-# --- 6. Session State ---
+# --- 3. Session State ---
 if 'messages' not in st.session_state: st.session_state.messages = []
 if 'authenticated' not in st.session_state: st.session_state.authenticated = False
 if 'temp_results' not in st.session_state: st.session_state.temp_results = []
 
-# --- 7. Login ---
+# --- 4. Login ---
 if not st.session_state.authenticated:
     st.title("🚀 GuruCool Prototype")
     email = st.text_input("Enter Email:")
@@ -105,29 +100,10 @@ if not st.session_state.authenticated:
             st.rerun()
     st.stop()
 
-# --- 8. Sidebar (Stats & Settings) ---
-with st.sidebar:
-    st.title("📊 Analytics & Settings")
-    
-    # Usage Stats Section
-    if os.path.exists("usage_logs.csv"):
-        logs_df = pd.read_csv("usage_logs.csv")
-        st.subheader("Top Questions Asked")
-        if not logs_df.empty:
-            top_q = logs_df['Question'].value_counts().head(5)
-            st.bar_chart(top_q)
-            st.write(top_q)
-        else:
-            st.write("No data yet.")
-    
-    if st.button("Clear Chat History"):
-        st.session_state.messages = []
-        st.session_state.temp_results = []
-        st.rerun()
-
+# --- 5. Main UI ---
 st.title("🗺️ Maps Knowledge Portal")
+st.sidebar.success("Select a page above for Analytics.")
 
-# --- 9. Floating Chatbot Logic ---
 st.markdown('<div class="floating-chat">', unsafe_allow_html=True)
 st.markdown('<div class="bot-header">🪐 GuruCool AI Support</div>', unsafe_allow_html=True)
 
@@ -140,10 +116,10 @@ with chat_box:
 
     if st.session_state.temp_results:
         with st.chat_message("assistant"):
-            st.write("Click a question to see the answer:")
+            st.write("Suggestions:")
             for r in st.session_state.temp_results:
                 if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
-                    log_usage(r['q']) # LOG THE CLICK
+                    log_usage(r['q'], st.session_state.user_email)
                     st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
                     st.session_state.temp_results = []
                     st.rerun()
@@ -152,13 +128,12 @@ if prompt := st.chat_input("Ask me something..."):
     st.session_state.temp_results = []
     st.session_state.messages.append({"role": "user", "content": prompt})
     results = bot.search(prompt)
-    
     if results:
         if results[0]['score'] > 0.8:
-            log_usage(results[0]['q']) # LOG THE DIRECT HIT
+            log_usage(results[0]['q'], st.session_state.user_email)
             st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
         else:
-            st.session_state.messages.append({"role": "assistant", "content": "I found a few matches:"})
+            st.session_state.messages.append({"role": "assistant", "content": "Related matches:"})
             st.session_state.temp_results = results
     else:
         st.session_state.messages.append({"role": "assistant", "content": "No matches found."})
