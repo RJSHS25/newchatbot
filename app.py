@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import nltk
 import string
+import csv  # Added for robust CSV writing
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.metrics.pairwise import cosine_similarity
@@ -10,7 +11,20 @@ from sklearn.metrics.pairwise import cosine_similarity
 # --- 1. Page Config ---
 st.set_page_config(layout="wide", page_title="TechM GuruCool")
 
-# --- 2. NLP & Bot Logic (Cached for Speed) ---
+# --- 2. Robust Logging Function ---
+def log_usage(question, user_email):
+    log_file = "usage_logs.csv"
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # We use the csv module directly to ensure proper quoting of text
+    file_exists = os.path.isfile(log_file)
+    with open(log_file, mode='a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+        if not file_exists:
+            writer.writerow(['Timestamp', 'User', 'Question']) # Header
+        writer.writerow([timestamp, user_email, question])
+
+# --- 3. NLP & Bot Logic ---
 @st.cache_resource
 def setup_nltk():
     try:
@@ -47,24 +61,12 @@ class FAQBot:
                 results.append({"idx": i, "score": sims[i], "q": self.df.iloc[i]['Question'], "a": self.df.iloc[i]['Answer']})
         return results
 
-def log_usage(question, user_email):
-    log_file = "usage_logs.csv"
-    new_entry = pd.DataFrame({
-        'Timestamp': [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
-        'User': [user_email],
-        'Question': [question]
-    })
-    if not os.path.isfile(log_file):
-        new_entry.to_csv(log_file, index=False)
-    else:
-        new_entry.to_csv(log_file, mode='a', header=False, index=False)
-
 @st.cache_data
 def load_data():
     if os.path.exists("data.csv"): return pd.read_csv("data.csv")
-    return pd.DataFrame({'Question': ['How to test?'], 'Answer': ['Type a question in chat!']})
+    return pd.DataFrame({'Question': ['Test?'], 'Answer': ['Working!']})
 
-# --- 3. Initialize Data & State ---
+# --- 4. Initialize State ---
 df_qa = load_data()
 bot = FAQBot(df_qa)
 
@@ -72,21 +74,20 @@ if 'messages' not in st.session_state: st.session_state.messages = []
 if 'authenticated' not in st.session_state: st.session_state.authenticated = False
 if 'temp_results' not in st.session_state: st.session_state.temp_results = []
 
-# --- 4. Sidebar Navigation ---
+# --- 5. Sidebar Navigation ---
 with st.sidebar:
     st.title("🧭 Navigation")
-    # This radio button acts as our "Page Switcher"
     choice = st.radio("Switch View:", ["💬 Chatbot", "📊 Analytics"])
     st.divider()
-    if st.button("Clear History"):
+    if st.button("Clear Chat History"):
         st.session_state.messages = []
         st.session_state.temp_results = []
         st.rerun()
 
-# --- 5. Login Gate ---
+# --- 6. Login Gate ---
 if not st.session_state.authenticated:
     st.title("🚀 GuruCool Prototype")
-    email = st.text_input("Enter Email to start:")
+    email = st.text_input("Enter Email:")
     if st.button("Login"):
         if "@" in email:
             st.session_state.authenticated = True
@@ -94,36 +95,40 @@ if not st.session_state.authenticated:
             st.rerun()
     st.stop()
 
-# --- 6. PAGE LOGIC ---
+# --- 7. PAGE LOGIC ---
 
 if choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
-        df_logs = pd.read_csv("usage_logs.csv")
-        if not df_logs.empty:
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader("Top 10 Questions")
-                st.bar_chart(df_logs['Question'].value_counts().head(10))
-            with col2:
-                st.subheader("Active Users")
-                st.write(df_logs['User'].value_counts())
-            st.subheader("Full Log History")
-            st.dataframe(df_logs.sort_values(by='Timestamp', ascending=False), use_container_width=True)
-        else:
-            st.info("No data logged yet.")
+        try:
+            # Safety: use on_bad_lines to skip errors if the file is messy
+            df_logs = pd.read_csv("usage_logs.csv", on_bad_lines='skip')
+            if not df_logs.empty:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.subheader("Top Questions")
+                    st.bar_chart(df_logs['Question'].value_counts().head(10))
+                with col2:
+                    st.subheader("Active Users")
+                    st.write(df_logs['User'].value_counts())
+                st.subheader("History")
+                st.dataframe(df_logs.sort_values(by='Timestamp', ascending=False), use_container_width=True)
+            else:
+                st.info("Log file is empty.")
+        except Exception as e:
+            st.error(f"Error reading logs: {e}")
+            if st.button("Reset Log File"):
+                os.remove("usage_logs.csv")
+                st.rerun()
     else:
-        st.warning("No log file found yet. Use the chatbot first!")
+        st.warning("No usage recorded yet.")
 
 else:
     # CHATBOT PAGE
     st.title("🗺️ Maps Knowledge Portal")
-    st.info(f"Logged in as: {st.session_state.user_email}")
-
-    # CSS for Floating Chat
+    
     st.markdown("""
         <style>
-        .stApp { background-color: #f4f7f9; }
         .floating-chat {
             position: fixed; bottom: 20px; right: 20px; width: 450px;
             background: white; border-radius: 15px;
@@ -149,7 +154,7 @@ else:
 
         if st.session_state.temp_results:
             with st.chat_message("assistant"):
-                st.write("Please select the most relevant question:")
+                st.write("Suggestions:")
                 for r in st.session_state.temp_results:
                     if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
                         log_usage(r['q'], st.session_state.user_email)
@@ -157,7 +162,7 @@ else:
                         st.session_state.temp_results = []
                         st.rerun()
 
-    if prompt := st.chat_input("Ask about savings, mapping, etc..."):
+    if prompt := st.chat_input("Ask me something..."):
         st.session_state.temp_results = []
         st.session_state.messages.append({"role": "user", "content": prompt})
         results = bot.search(prompt)
@@ -167,10 +172,10 @@ else:
                 log_usage(results[0]['q'], st.session_state.user_email)
                 st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
             else:
-                st.session_state.messages.append({"role": "assistant", "content": "I found a few similar topics:"})
+                st.session_state.messages.append({"role": "assistant", "content": "I found a few matches:"})
                 st.session_state.temp_results = results
         else:
-            st.session_state.messages.append({"role": "assistant", "content": "I couldn't find a match. Try rephrasing."})
+            st.session_state.messages.append({"role": "assistant", "content": "No matches found."})
         st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
