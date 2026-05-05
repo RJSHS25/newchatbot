@@ -3,7 +3,6 @@ import pandas as pd
 import os
 import csv
 import string
-import nltk
 from datetime import datetime
 from fuzzywuzzy import fuzz
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -14,7 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 st.set_page_config(layout="wide", page_title="TechM Maps Portal")
 
-# Custom CSS for UI Aesthetics
+# Custom CSS for UI Aesthetics (Removed Floating Bot CSS)
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
@@ -24,7 +23,6 @@ st.markdown("""
         height: 100vh;
         background-color: #ffffff;
     }
-    /* Style headers and dividers */
     .main-title { color: #0078d4; font-weight: bold; }
     hr { margin-top: 1rem; margin-bottom: 1rem; }
     </style>
@@ -68,16 +66,13 @@ def log_usage(question, user_email):
 
 @st.cache_data
 def load_and_prep_data():
-    # Attempt to load knowledge_base.csv (or your data.csv)
     file_path = "knowledge_base.csv" if os.path.exists("knowledge_base.csv") else "data.csv"
     if os.path.exists(file_path):
         df = pd.read_csv(file_path)
     else:
         df = pd.DataFrame(columns=['Topic', 'Description', 'Category'])
-        # Fallback if no file exists
         df.loc[0] = ["Linear", "Linear mapping relates to road lines and lanes.", "Linear"]
         
-    # Ensure standard column names for searching
     if 'Question' in df.columns and 'Topic' not in df.columns:
         df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
         
@@ -86,37 +81,30 @@ def load_and_prep_data():
 
 df_kb = load_and_prep_data()
 
-def get_best_match_nlp(query, dataframe):
-    if dataframe.empty: return None, 0
+def get_matches_nlp(query, dataframe, top_n=3):
+    if dataframe.empty: return []
     vectorizer = TfidfVectorizer(stop_words='english')
     tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
     query_vec = vectorizer.transform([query])
     cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
-    best_idx = cosine_sim.argsort()[-1]
-    highest_score = cosine_sim[best_idx]
     
-    # Fallback to Fuzzy Logic for conversational or low-score queries
-    if highest_score < 0.2:
-        fuzzy_scores = dataframe['profile'].apply(lambda x: fuzz.partial_ratio(query.lower(), str(x).lower()))
-        best_idx = fuzzy_scores.idxmax()
-        highest_score = fuzzy_scores.max() / 100
-    return dataframe.iloc[best_idx], highest_score
+    indices = cosine_sim.argsort()[-top_n:][::-1]
+    results = []
+    for idx in indices:
+        score = cosine_sim[idx]
+        if score > 0.1:
+            results.append({"idx": idx, "score": score, "q": dataframe.iloc[idx]['Topic'], "a": dataframe.iloc[idx]['Description']})
+    return results
 
 # ===============================
-# ⬅️ LEFT SIDEBAR (Navigation & Analytics)
+# ⬅️ LEFT SIDEBAR (Navigation)
 # ===============================
 with st.sidebar:
     st.title("🧭 Navigation")
     st.write(f"👤 **User:** {st.session_state.user_email}")
     st.divider()
-    
     nav_choice = st.radio("Switch View:", ["🏠 Dashboard", "📊 Usage Analytics"])
-    
     st.divider()
-    st.subheader("Support Links")
-    st.markdown("[📋 Company Guidelines](https://example.com)")
-    st.markdown("[🛠️ Tooling Documentation](https://example.com)")
-    
     if st.button("Logout"):
         st.session_state.authenticated = False
         st.rerun()
@@ -124,8 +112,6 @@ with st.sidebar:
 # ===============================
 # 🏗️ MAIN CONTENT AREA
 # ===============================
-
-# PAGE: ANALYTICS
 if nav_choice == "📊 Usage Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
@@ -140,25 +126,19 @@ if nav_choice == "📊 Usage Analytics":
                     st.subheader("Most Active Users")
                     st.write(df_logs['User'].value_counts())
                 st.divider()
-                st.subheader("Recent Search History")
                 st.dataframe(df_logs.sort_values(by='Timestamp', ascending=False), use_container_width=True)
-            else:
-                st.info("Log file is empty.")
         except:
-            st.error("Error reading logs. File may be corrupted.")
+            st.error("Error reading logs.")
     else:
         st.warning("No usage recorded yet.")
 
-# PAGE: DASHBOARD + RIGHT CHATBOT
 else:
-    # 70% Content | 30% Chatbot
     main_col, bot_col = st.columns([0.7, 0.3])
 
     with main_col:
         st.markdown("<h2 class='main-title'>🗺️ Maps Knowledge Portal</h2>", unsafe_allow_html=True)
         st.divider()
         st.video("https://www.youtube.com/watch?v=hA_-MkU0Nfw")
-        
         st.markdown("### 🚀 Choose Your Domain")
         d1, d2, d3 = st.columns(3)
         domain_data = [
@@ -166,29 +146,24 @@ else:
             {"name": "Polygon", "col": d2, "img": "images/polygon.png", "path": "pages/2_Polygon.py"},
             {"name": "Signals", "col": d3, "img": "images/signals.png", "path": "pages/3_Signals.py"}
         ]
-
         for dom in domain_data:
             with dom["col"]:
                 if os.path.exists(dom["img"]):
                     st.image(dom["img"], use_container_width=True)
                 st.subheader(dom["name"])
                 if st.button(f"Open {dom['name']}", key=dom['name']):
-                    try:
-                        st.switch_page(dom["path"])
-                    except:
-                        st.error(f"Page '{dom['path']}' not found.")
+                    st.switch_page(dom["path"])
 
+    # RIGHT SIDEBAR CHATBOT
     with bot_col:
         st.markdown('<div class="right-pane">', unsafe_allow_html=True)
         st.subheader("🪐 GuruCool Support")
         
-        # Small Talk Definitions
         small_talk = {
-            "hi": "Hello! I'm GuruCool. How can I help you today?",
-            "hello": "Hi there! What can I help you find in the portal?",
-            "thanks": "You're very welcome!",
-            "thank you": "Happy to help!",
-            "how are you": "I'm doing great! Ready to analyze some map data."
+            "hi": "Hello! How can I help you today?",
+            "hello": "Hi there! What are you looking for in the portal?",
+            "thanks": "You're welcome!",
+            "thank you": "Happy to help!"
         }
 
         chat_box = st.container(height=500)
@@ -197,29 +172,40 @@ else:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
 
-        # Process Input
+            # Render Suggestions Buttons
+            if st.session_state.temp_results:
+                st.info("Please select the most relevant topic:")
+                for r in st.session_state.temp_results:
+                    if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
+                        log_usage(r['q'], st.session_state.user_email)
+                        st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
+                        st.session_state.temp_results = []
+                        st.rerun()
+
         if prompt := st.chat_input("Ask GuruCool..."):
+            st.session_state.temp_results = []
             st.session_state.messages.append({"role": "user", "content": prompt})
             
-            # Clean prompt for Small Talk check
             clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
             
             if clean_p in small_talk:
-                bot_response = small_talk[clean_p]
+                st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
             else:
-                result, score = get_best_match_nlp(prompt, df_kb)
-                
-                if score > 0.15: # Flexible threshold
-                    log_usage(result['Topic'], st.session_state.user_email)
-                    bot_response = f"**{result['Topic']}**\n\n{result['Description']}"
+                results = get_matches_nlp(prompt, df_kb)
+                if results:
+                    if results[0]['score'] > 0.6:
+                        log_usage(results[0]['q'], st.session_state.user_email)
+                        st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
+                    else:
+                        st.session_state.messages.append({"role": "assistant", "content": "I found these related topics:"})
+                        st.session_state.temp_results = results
                 else:
-                    bot_response = "I'm not exactly sure about that. Try asking about 'Linear', 'Polygon', or specific mapping tasks."
-            
-            st.session_state.messages.append({"role": "assistant", "content": bot_response})
+                    st.session_state.messages.append({"role": "assistant", "content": "I'm not sure. Try asking about Linear or Polygon mapping."})
             st.rerun()
 
-        if st.button("Clear Chat", use_container_width=True):
-            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool. How can I help?"}]
+        if st.button("Clear History", use_container_width=True):
+            st.session_state.messages = [{"role": "assistant", "content": "Hi! How can I help?"}]
+            st.session_state.temp_results = []
             st.rerun()
             
         st.markdown('</div>', unsafe_allow_html=True)
