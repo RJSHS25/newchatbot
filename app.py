@@ -16,7 +16,6 @@ def log_usage(question, user_email):
     log_file = "usage_logs.csv"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # We use the csv module directly to ensure proper quoting of text
     file_exists = os.path.isfile(log_file)
     with open(log_file, mode='a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
@@ -101,7 +100,6 @@ if choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
     if os.path.exists("usage_logs.csv"):
         try:
-            # Safety: use on_bad_lines to skip errors if the file is messy
             df_logs = pd.read_csv("usage_logs.csv", on_bad_lines='skip')
             if not df_logs.empty:
                 col1, col2 = st.columns(2)
@@ -127,6 +125,17 @@ else:
     # CHATBOT PAGE
     st.title("🗺️ Maps Knowledge Portal")
     
+    # Small Talk Dictionary
+    small_talk = {
+        "hi": "Hello! I'm GuruCool AI. How can I help you today?",
+        "hello": "Hi there! What can I help you find in the portal?",
+        "how are you": "I'm doing great, thank you! Ready to help you with some data.",
+        "thanks": "You're very welcome!",
+        "thank you": "Happy to help! Let me know if you need anything else.",
+        "bye": "Goodbye! Have a great day.",
+        "who are you": "I am the GuruCool AI Support bot, specialized in Maps and Portal queries."
+    }
+
     st.markdown("""
         <style>
         .floating-chat {
@@ -165,17 +174,29 @@ else:
     if prompt := st.chat_input("Ask me something..."):
         st.session_state.temp_results = []
         st.session_state.messages.append({"role": "user", "content": prompt})
-        results = bot.search(prompt)
         
-        if results:
-            if results[0]['score'] > 0.8:
-                log_usage(results[0]['q'], st.session_state.user_email)
-                st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
-            else:
-                st.session_state.messages.append({"role": "assistant", "content": "I found a few matches:"})
-                st.session_state.temp_results = results
+        # Preprocess prompt for small talk check
+        clean_prompt = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
+        
+        # 1. Check Small Talk
+        if clean_prompt in small_talk:
+            st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_prompt]})
+        
         else:
-            st.session_state.messages.append({"role": "assistant", "content": "No matches found."})
+            # 2. Perform FAQ Search
+            results = bot.search(prompt)
+            if results:
+                if results[0]['score'] > 0.8:
+                    log_usage(results[0]['q'], st.session_state.user_email)
+                    st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
+                else:
+                    st.session_state.messages.append({"role": "assistant", "content": "I found a few matches:"})
+                    st.session_state.temp_results = results
+            else:
+                # 3. Final Fallback for random/unknown text
+                fallback_msg = "I'm not quite sure how to help with that. I'm specialized in Maps and Portal data—could you try asking a question about those topics?"
+                st.session_state.messages.append({"role": "assistant", "content": fallback_msg})
+        
         st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
