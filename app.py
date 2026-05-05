@@ -23,6 +23,7 @@ st.markdown("""
         background: #0078d4; color: white; padding: 10px;
         border-radius: 10px 10px 0 0; font-weight: bold; margin: -10px -10px 10px -10px;
     }
+    .chat-container { height: 400px; overflow-y: auto; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -32,17 +33,15 @@ def setup_nltk():
     try:
         nltk.download('wordnet', quiet=True)
         nltk.download('omw-1.4', quiet=True)
-        return nltk.stem.WordNetLemmatizer()
     except:
-        return None
+        pass
 
-lemmatizer = setup_nltk()
+setup_nltk()
+lemmatizer = nltk.stem.WordNetLemmatizer()
 
 def tfidf_preprocess(text):
-    if pd.isna(text) or text == "": return ""
-    # Remove punctuation and lower case
+    if pd.isna(text): return ""
     text = str(text).lower().translate(str.maketrans('', '', string.punctuation))
-    # Lemmatize
     tokens = [lemmatizer.lemmatize(t) for t in text.split() if t not in ENGLISH_STOP_WORDS]
     return " ".join(tokens)
 
@@ -52,48 +51,36 @@ class FAQBot:
         self.df = df
         if df.empty:
             self.vectorizer = None
-            self.vectors = None
             return
-        
-        # We use a broader ngram range to capture phrases better
-        self.vectorizer = TfidfVectorizer(preprocessor=tfidf_preprocess, ngram_range=(1, 2))
-        # Ensure we are fitting on the actual Question column
-        self.vectors = self.vectorizer.fit_transform(self.df['Question'].astype(str))
+        self.vectorizer = TfidfVectorizer(preprocessor=tfidf_preprocess, ngram_range=(1, 3))
+        self.vectors = self.vectorizer.fit_transform(df['Question'].astype(str))
 
-    def search(self, query, context="", top_n=3):
-        if self.vectorizer is None or self.vectors is None: return []
-        
-        # Combine current query with context for conversational memory
-        full_query = f"{context} {query}".strip()
-        query_vec = self.vectorizer.transform([full_query])
-        
-        # Calculate similarities
+    def search(self, query, top_n=3):
+        if self.df.empty or self.vectorizer is None: return []
+        query_vec = self.vectorizer.transform([query])
         sims = cosine_similarity(query_vec, self.vectors).flatten()
-        
-        # Get indices of top matches
         indices = sims.argsort()[-top_n:][::-1]
         
         results = []
         for i in indices:
-            score = sims[i]
-            if score > 0.15: # Confidence threshold to prevent "same answer every time"
+            if sims[i] > 0.1:
                 results.append({
                     "idx": i, 
-                    "score": score, 
+                    "score": sims[i], 
                     "q": self.df.iloc[i]['Question'], 
                     "a": self.df.iloc[i]['Answer']
                 })
         return results
 
-# --- 4. Data Loading ---
+# --- 4. Load Data ---
 @st.cache_data
 def load_data():
     if os.path.exists("data.csv"):
-        df = pd.read_csv("data.csv")
-        # Critical: Clean the data to remove empty rows that confuse the NLP
-        df = df.dropna(subset=['Question', 'Answer'])
-        return df
-    return pd.DataFrame(columns=['Question', 'Answer'])
+        return pd.read_csv("data.csv")
+    return pd.DataFrame({
+        'Question': ['How to reset password?', 'Where is the office?'], 
+        'Answer': ['Go to settings > security.', 'It is in Hyderabad.']
+    })
 
 df_qa = load_data()
 bot = FAQBot(df_qa)
@@ -101,68 +88,84 @@ bot = FAQBot(df_qa)
 # --- 5. Session State ---
 if 'messages' not in st.session_state:
     st.session_state.messages = []
-if 'last_q' not in st.session_state:
-    st.session_state.last_q = ""
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'temp_results' not in st.session_state:
+    st.session_state.temp_results = []
 
-# --- 6. Simplified Login ---
-if not st.session_state.auth:
+# --- 6. Prototype Login ---
+if not st.session_state.authenticated:
     st.title("🚀 GuruCool Prototype")
-    email = st.text_input("Enter Email:")
+    email = st.text_input("Enter Email to start:")
     if st.button("Login"):
         if "@" in email:
-            st.session_state.auth = True
+            st.session_state.authenticated = True
             st.session_state.user_email = email
             st.rerun()
     st.stop()
 
-# --- 7. UI Dashboard ---
-st.title("🗺️ Maps Knowledge Portal")
+# --- 7. Sidebar & Main UI ---
+with st.sidebar:
+    st.title("Settings")
+    if st.button("Clear History"):
+        st.session_state.messages = []
+        st.session_state.temp_results = []
+        st.rerun()
 
-# --- 8. Floating Chatbot ---
+st.title("🗺️ Maps Knowledge Portal")
+st.info(f"Welcome, {st.session_state.user_email}")
+
+# --- 8. Floating Chatbot Logic ---
+# Wrap everything in a container to maintain visual structure
 st.markdown('<div class="floating-chat">', unsafe_allow_html=True)
 st.markdown('<div class="bot-header">🪐 GuruCool AI Support</div>', unsafe_allow_html=True)
 
 chat_box = st.container(height=380)
 
-for m in st.session_state.messages:
-    with chat_box.chat_message(m["role"]):
-        st.markdown(m["content"])
+# A. Render Chat History
+with chat_box:
+    for m in st.session_state.messages:
+        with st.chat_message(m["role"]):
+            st.markdown(m["content"])
 
-if prompt := st.chat_input("How can I help?"):
+    # B. Render Suggestion Buttons (if any exist in state)
+    if st.session_state.temp_results:
+        with st.chat_message("assistant"):
+            st.write("I found these related topics. Click one to view the answer:")
+            for r in st.session_state.temp_results:
+                if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
+                    # Update History with the answer
+                    final_answer = f"**{r['q']}**\n\n{r['a']}"
+                    st.session_state.messages.append({"role": "assistant", "content": final_answer})
+                    # Clear suggestions and refresh
+                    st.session_state.temp_results = []
+                    st.rerun()
+
+# C. Chat Input Processing
+if prompt := st.chat_input("Ask about savings, mapping, etc..."):
+    # Clear suggestions if user types a new question
+    st.session_state.temp_results = []
+    
+    # 1. Add User Message to History
     st.session_state.messages.append({"role": "user", "content": prompt})
     
-    # Analyze with context
-    results = bot.search(prompt, context=st.session_state.last_q)
+    # 2. Perform Search
+    results = bot.search(prompt)
     
-    with chat_box.chat_message("assistant"):
-        if results:
-            # If the top match is distinct (Confidence Gate)
-            if results[0]['score'] > 0.4:
-                res = results[0]
-                ans = f"**{res['q']}**\n\n{res['a']}"
-                st.markdown(ans)
-                st.session_state.messages.append({"role": "assistant", "content": ans})
-                st.session_state.last_q = res['q'] # Remember context
-            else:
-                # Ambiguous match: Show suggestions
-                st.markdown("I'm not 100% sure. Did you mean:")
-                for r in results:
-                    if st.button(f"👉 {r['q']}", key=f"btn_{r['idx']}"):
-                        final_ans = f"**{r['q']}**\n\n{r['a']}"
-                        st.session_state.messages.append({"role": "assistant", "content": final_ans})
-                        st.session_state.last_q = r['q']
-                        st.rerun()
+    # 3. Handle Logic
+    if results:
+        # If very high match, give answer directly
+        if results[0]['score'] > 0.8:
+            answer_text = f"**{results[0]['q']}**\n\n{results[0]['a']}"
+            st.session_state.messages.append({"role": "assistant", "content": answer_text})
         else:
-            msg = "I couldn't find a match for that. Could you try rephrasing?"
-            st.markdown(msg)
-            st.session_state.messages.append({"role": "assistant", "content": msg})
-            st.session_state.last_q = "" # Clear context on failure
-
-if st.button("Clear History"):
-    st.session_state.messages = []
-    st.session_state.last_q = ""
+            # Otherwise, store suggestions to be rendered in the next cycle
+            options_msg = "I found a few matches. Which one are you looking for?"
+            st.session_state.messages.append({"role": "assistant", "content": options_msg})
+            st.session_state.temp_results = results
+    else:
+        st.session_state.messages.append({"role": "assistant", "content": "I couldn't find an answer for that. Try rephrasing your question."})
+    
     st.rerun()
 
 st.markdown('</div>', unsafe_allow_html=True)
