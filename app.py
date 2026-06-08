@@ -166,7 +166,15 @@ def get_combined_matches(query, dataframe, top_n=5):
                         "idx": idx
                     })
 
-    return results
+    unique_results = []
+    seen = set()
+
+    for r in results:
+        if r['idx'] not in seen:
+            unique_results.append(r)
+            seen.add(r['idx'])
+    
+    return unique_results
 
 
 # ===============================
