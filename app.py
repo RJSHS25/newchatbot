@@ -222,7 +222,7 @@ else:
             if st.session_state.temp_results:
                 st.write("---")
                 st.caption("Common matches:")
-                for r in st.session_state.temp_results:
+                for i, r in enumerate(st.session_state.temp_results):
                     if st.button(f"👉 {r['q']}", key=f"sug_btn_{r['idx']}", use_container_width=True):
                         log_usage(r['q'], st.session_state.user_email)
                         st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
