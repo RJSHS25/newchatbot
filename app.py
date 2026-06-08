@@ -110,7 +110,7 @@ def get_combined_matches(query, dataframe, top_n=3):
         
         nlp_indices = cosine_sim.argsort()[-top_n:][::-1]
         for idx, row in dataframe.iterrows():
-            topic_clean = str(row['Topic']).lower():
+            topic_clean = str(row['Topic']).lower()
                 if query_clean in topic_clean.split() or query_clean == topic_clean:
                     results.append({
                         "score": 1.0, 
