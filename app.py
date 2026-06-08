@@ -14,17 +14,25 @@ from sklearn.metrics.pairwise import cosine_similarity
 st.set_page_config(layout="wide", page_title="TechM Finance Portal")
 
 st.markdown("""
-    <style>
-    .stApp { background-color: #f8f9fa; }
-    [data-testid="column"]:nth-child(2) {
-        border-left: 1px solid #dee2e6;
-        padding-left: 20px;
-    }
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stChatInput { padding-bottom: 20px; }
-    </style>
-    """, unsafe_allow_html=True)
+<style>
+
+.stApp {
+    background-color: #f3f4f6;
+}
+
+[data-testid="stVerticalBlock"] {
+    border-radius: 10px;
+}
+
+.chat-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
