@@ -74,11 +74,12 @@ def get_combined_matches(query, dataframe, top_n=5):
     # ==========================
     # 1. Exact Match
     # ==========================
+    
     exact_matches = dataframe[
-        dataframe['Topic']
+        dataframe['profile']
         .astype(str)
         .str.lower()
-        == query_clean
+        .str.contains(query_clean, na=False)
     ]
 
     for idx, row in exact_matches.iterrows():
@@ -114,7 +115,11 @@ def get_combined_matches(query, dataframe, top_n=5):
     # ==========================
     if not results:
 
-        choices = dataframe['Topic'].astype(str).tolist()
+        choices = (
+            dataframe['Topic'].astype(str)
+            + " "
+            + dataframe['Description'].astype(str)
+        ).tolist()
 
         fuzzy_results = process.extract(
             query,
