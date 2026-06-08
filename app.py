@@ -11,7 +11,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 # ⚙️ CONFIG & SESSION STATE
 # ===============================
-st.markdown("""
 
 
 if 'authenticated' not in st.session_state:
