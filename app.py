@@ -207,7 +207,6 @@ else:
         st.video("https://www.youtube.com/watch?v=malw6c993qs")
         
         st.markdown("### 🚀 Domains")
-        d1, d2, d3 = st.columns(3)
         if st.button("💰 Finance", use_container_width=True):
             st.info("Opening Finance")
         
