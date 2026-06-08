@@ -11,8 +11,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ===============================
 # ⚙️ CONFIG & SESSION STATE
 # ===============================
-st.set_page_config(layout="wide", page_title="TechM Finance Portal")
-
 st.markdown("""
 <style>
 
