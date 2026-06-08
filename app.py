@@ -75,7 +75,6 @@ def load_and_prep_data():
 
 df_kb = load_and_prep_data()
 
-```python
 def get_combined_matches(query, dataframe, top_n=5):
 
     if dataframe.empty:
