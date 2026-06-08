@@ -74,12 +74,11 @@ def get_combined_matches(query, dataframe, top_n=5):
     # ==========================
     # 1. Exact Match
     # ==========================
-    
     exact_matches = dataframe[
-        dataframe['profile']
+        dataframe['Topic']
         .astype(str)
         .str.lower()
-        .str.contains(query_clean, na=False)
+        == query_clean
     ]
 
     for idx, row in exact_matches.iterrows():
@@ -115,11 +114,7 @@ def get_combined_matches(query, dataframe, top_n=5):
     # ==========================
     if not results:
 
-        choices = (
-            dataframe['Topic'].astype(str)
-            + " "
-            + dataframe['Description'].astype(str)
-        ).tolist()
+        choices = dataframe['Topic'].astype(str).tolist()
 
         fuzzy_results = process.extract(
             query,
@@ -196,30 +191,15 @@ else:
     chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
-
-    st.markdown("""
-    <h4 style='text-align:center;color:#0078d4;'>
-    TechM Finance
-    </h4>
-    """, unsafe_allow_html=True)
-
+        st.markdown("""
+        <h4 style='text-align:center;color:#0078d4;'>
+        TechM Finance
+        </h4>
+        """, unsafe_allow_html=True)
+        
     st.divider()
-
+    
     st.markdown("### 🚀 Quick Links")
-
-    if st.button("💰 Finance", use_container_width=True):
-        st.info("Finance section coming soon")
-
-    if st.button("📒 Accounts", use_container_width=True):
-        st.info("Accounts section coming soon")
-
-    if st.button("👤 Onboarding", use_container_width=True):
-        st.info("Onboarding section coming soon")
-
-    st.divider()
-
-    with st.expander("📺 Finance Overview Video"):
-        st.video("https://www.youtube.com/watch?v=malw6c993qs")
     
     if st.button("💰 Finance", use_container_width=True):
         st.info("Finance section coming soon")
