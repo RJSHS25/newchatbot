@@ -109,13 +109,13 @@ def get_combined_matches(query, dataframe, top_n=3):
         cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
         
         nlp_indices = cosine_sim.argsort()[-top_n:][::-1]
-        for idx in nlp_indices:
-            if cosine_sim[idx] > 0.1:
-                if not any(r['q'] == dataframe.iloc[idx]['Topic'] for r in results):
+        for idx, row in dataframe.iterrows():
+            topic_clean = str(row['Topic']).lower():
+                if query_clean in topic_clean.split() or query_clean == topic_clean:
                     results.append({
-                        "score": cosine_sim[idx], 
-                        "q": dataframe.iloc[idx]['Topic'], 
-                        "a": dataframe.iloc[idx]['Description'],
+                        "score": 1.0, 
+                        "q": row['Topic'], 
+                        "a": row['Description'],
                         "idx": idx
                     })
     
