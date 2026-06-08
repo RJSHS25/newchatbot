@@ -12,25 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # ⚙️ CONFIG & SESSION STATE
 # ===============================
 st.markdown("""
-<style>
 
-.stApp {
-    background-color: #f3f4f6;
-}
-
-[data-testid="stVerticalBlock"] {
-    border-radius: 10px;
-}
-
-.chat-card {
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
