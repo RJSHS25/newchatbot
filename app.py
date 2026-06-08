@@ -212,12 +212,12 @@ else:
     chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
-    st.markdown("""
-    <h4 style='text-align:center;color:#0078d4;'>
-    TechM Finance
-    </h4>
-    """, unsafe_allow_html=True)
-    
+        st.markdown("""
+        <h4 style='text-align:center;color:#0078d4;'>
+        TechM Finance
+        </h4>
+        """, unsafe_allow_html=True)
+        
     st.divider()
     
     st.markdown("### 🚀 Quick Links")
