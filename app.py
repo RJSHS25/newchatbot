@@ -202,23 +202,31 @@ else:
     chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
-        st.markdown("<h4 style='color:#0078d4;'>🗺️ Tech Mahindra Finance </h4>", unsafe_allow_html=True)
-        with st.expander("📺 Overview Video"):
-            st.video("https://www.youtube.com/watch?v=malw6c993qs")
-        
-        st.markdown("### 🚀 Domains")
-        st.markdown("### Quick Links")
-            
-            st.page_link("#", label="💰 Finance")
-            st.page_link("#", label="📒 Accounts")
-            st.page_link("#", label="👤 Onboarding")
-            st.info("Opening Finance")
-        
-        if st.button("📒 Accounts", use_container_width=True):
-            st.info("Opening Accounts")
-        
-        if st.button("👤 Onboarding", use_container_width=True):
-            st.info("Opening Onboarding")
+    with nav_col:
+    st.markdown("""
+    <h4 style='text-align:center;color:#0078d4;'>
+    TechM Finance
+    </h4>
+    """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    st.markdown("### 🚀 Quick Links")
+    
+    if st.button("💰 Finance", use_container_width=True):
+        st.info("Finance section coming soon")
+    
+    if st.button("📒 Accounts", use_container_width=True):
+        st.info("Accounts section coming soon")
+    
+    if st.button("👤 Onboarding", use_container_width=True):
+        st.info("Onboarding section coming soon")
+    
+    st.divider()
+    
+    with st.expander("📺 Finance Overview Video"):
+        st.video("https://www.youtube.com/watch?v=malw6c993qs")
+
 
     # --- THE RIGHT SIDE BOT (GURUCOOL) ---
     with chat_col:
