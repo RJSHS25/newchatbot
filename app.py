@@ -183,9 +183,9 @@ if nav_choice == "📊 Analytics":
     else:
         st.info("No logs found yet.")
 else:
-    main_col, bot_col = st.columns([0.7, 0.3])
+    chat_col, nav_col = st.columns([0.75, 0.25])
 
-    with main_col:
+    with bot_col:
         st.markdown("<h2 style='color:#0078d4;'>🗺️ Tech Mahindra Finance </h2>", unsafe_allow_html=True)
         st.divider()
         st.video("https://www.youtube.com/watch?v=malw6c993qs")
