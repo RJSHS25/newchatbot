@@ -140,7 +140,7 @@ def get_combined_matches(query, dataframe, top_n=5):
         fuzzy_results = process.extract(
             query,
             choices,
-            scorer=fuzz.token_set_ratio,
+            scorer=fuzz.WRatio,
             limit=top_n
         )
 
@@ -149,7 +149,7 @@ def get_combined_matches(query, dataframe, top_n=5):
             match_text = match[0]
             score = match[1]
 
-            if score > 70:
+            if score > 55:
 
                 idx_list = dataframe.index[
                     dataframe['Topic'] == match_text
