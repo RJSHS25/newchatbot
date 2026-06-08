@@ -148,13 +148,13 @@ else:
     with main_col:
         st.markdown("<h2 style='color:#0078d4;'>🗺️ Maps Knowledge Portal</h2>", unsafe_allow_html=True)
         st.divider()
-        st.video("https://www.youtube.com/watch?v=hA_-MkU0Nfw")
+        st.video("https://www.youtube.com/watch?v=malw6c993qs")
         
         st.markdown("### 🚀 Domains")
         d1, d2, d3 = st.columns(3)
-        if d1.button("Linear", use_container_width=True): st.info("Opening Linear...")
-        if d2.button("Polygon", use_container_width=True): st.info("Opening Polygon...")
-        if d3.button("Signals", use_container_width=True): st.info("Opening Signals...")
+        if d1.button("Finance", use_container_width=True): st.info("Opening Linear...")
+        if d2.button("Account", use_container_width=True): st.info("Opening Polygon...")
+        if d3.button("Onboarding", use_container_width=True): st.info("Opening Signals...")
 
     # --- THE RIGHT SIDE BOT (GURUCOOL) ---
     with bot_col:
