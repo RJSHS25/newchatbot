@@ -75,51 +75,92 @@ def load_and_prep_data():
 
 df_kb = load_and_prep_data()
 
-def get_combined_matches(query, dataframe, top_n=3):
-    if dataframe.empty: return []
-    
-    # 1. Fuzzy Matching
-    choices = dataframe['Topic'].tolist()
-    # process.extract returns list of (string, score) or (string, score, index)
-    fuzzy_results = process.extract(query, choices, scorer=fuzz.token_set_ratio, limit=top_n)
-    
-    results = []
-    for match in fuzzy_results:
-        # Robust unpacking: handle different versions of fuzzywuzzy/thefuzz
-        match_text = match[0]
-        score = match[1]
-        
-        if score > 75:
-            # Find the index in the original dataframe where the Topic matches
-            idx_list = dataframe.index[dataframe['Topic'] == match_text].tolist()
-            if idx_list:
-                idx = idx_list[0]
-                results.append({
-                    "score": score / 100, 
-                    "q": dataframe.iloc[idx]['Topic'], 
-                    "a": dataframe.iloc[idx]['Description'],
-                    "idx": idx
-                })
+```python
+def get_combined_matches(query, dataframe, top_n=5):
 
-    # 2. NLP (TF-IDF) Fallback
-    if not results or results[0]['score'] < 0.8:
-        vectorizer = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = vectorizer.fit_transform(dataframe['profile'])
-        query_vec = vectorizer.transform([query])
-        cosine_sim = cosine_similarity(query_vec, tfidf_matrix).flatten()
-        
-        nlp_indices = cosine_sim.argsort()[-top_n:][::-1]
-        for idx, row in dataframe.iterrows():
-            topic_clean = str(row['Topic']).lower()
-                if query_clean in topic_clean.split() or query_clean == topic_clean:
+    if dataframe.empty:
+        return []
+
+    query_clean = query.lower().strip()
+
+    results = []
+
+    # ==========================
+    # 1. Exact Match
+    # ==========================
+    exact_matches = dataframe[
+        dataframe['Topic']
+        .astype(str)
+        .str.lower()
+        == query_clean
+    ]
+
+    for idx, row in exact_matches.iterrows():
+        results.append({
+            "score": 1.0,
+            "q": row['Topic'],
+            "a": row['Description'],
+            "idx": idx
+        })
+
+    # ==========================
+    # 2. Partial Match
+    # ==========================
+    if not results:
+
+        partial_matches = dataframe[
+            dataframe['Topic']
+            .astype(str)
+            .str.lower()
+            .str.contains(query_clean, na=False)
+        ]
+
+        for idx, row in partial_matches.iterrows():
+            results.append({
+                "score": 0.95,
+                "q": row['Topic'],
+                "a": row['Description'],
+                "idx": idx
+            })
+
+    # ==========================
+    # 3. Fuzzy Match Fallback
+    # ==========================
+    if not results:
+
+        choices = dataframe['Topic'].astype(str).tolist()
+
+        fuzzy_results = process.extract(
+            query,
+            choices,
+            scorer=fuzz.token_set_ratio,
+            limit=top_n
+        )
+
+        for match in fuzzy_results:
+
+            match_text = match[0]
+            score = match[1]
+
+            if score > 70:
+
+                idx_list = dataframe.index[
+                    dataframe['Topic'] == match_text
+                ].tolist()
+
+                if idx_list:
+
+                    idx = idx_list[0]
+
                     results.append({
-                        "score": 1.0, 
-                        "q": row['Topic'], 
-                        "a": row['Description'],
+                        "score": score / 100,
+                        "q": dataframe.iloc[idx]['Topic'],
+                        "a": dataframe.iloc[idx]['Description'],
                         "idx": idx
                     })
-    
+
     return results
+
 
 # ===============================
 # ⬅️ SIDEBAR
