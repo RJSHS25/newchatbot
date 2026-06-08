@@ -199,15 +199,19 @@ if nav_choice == "📊 Analytics":
     else:
         st.info("No logs found yet.")
 else:
-    chat_col, nav_col = st.columns([0.75, 0.25])
+    chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
         st.markdown("<h4 style='color:#0078d4;'>🗺️ Tech Mahindra Finance </h4>", unsafe_allow_html=True)
-        st.divider()
-        st.video("https://www.youtube.com/watch?v=malw6c993qs")
+        with st.expander("📺 Overview Video"):
+            st.video("https://www.youtube.com/watch?v=malw6c993qs")
         
         st.markdown("### 🚀 Domains")
-        if st.button("💰 Finance", use_container_width=True):
+        st.markdown("### Quick Links")
+            
+            st.page_link("#", label="💰 Finance")
+            st.page_link("#", label="📒 Accounts")
+            st.page_link("#", label="👤 Onboarding")
             st.info("Opening Finance")
         
         if st.button("📒 Accounts", use_container_width=True):
@@ -219,7 +223,7 @@ else:
     # --- THE RIGHT SIDE BOT (GURUCOOL) ---
     with chat_col:
         st.subheader("🪐 GuruCool AI")
-        chat_history_container = st.container(height=750)
+        chat_history_container = st.container()
         
         with chat_history_container:
             for m in st.session_state.messages:
