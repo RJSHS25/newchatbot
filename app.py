@@ -199,6 +199,16 @@ if nav_choice == "📊 Analytics":
     else:
         st.info("No logs found yet.")
 else:
+    st.markdown("""
+    <h1 style='text-align:center;color:#0078d4;'>
+    Tech Mahindra Finance Portal
+    </h1>
+    <p style='text-align:center;color:#666;'>
+    Ask GuruCool anything about Materials, GL Accounts and Finance Processes
+    </p>
+    """, unsafe_allow_html=True)
+    
+    st.divider()
     chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
