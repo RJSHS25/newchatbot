@@ -262,7 +262,7 @@ else:
         """, unsafe_allow_html=True)
 
     with chat_col:
-        st.subheader("🪐 Finacne Guru")
+        st.subheader("🪐 TechMahindra Finance Guru")
 
         chat_history_container = st.container()
 
