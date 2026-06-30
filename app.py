@@ -196,7 +196,7 @@ with st.sidebar:
     st.title("🧭 Navigation")
 
     if "nav_choice" not in st.session_state:
-        st.session_state.nav_choice = "🏠 Finance Dashbaord"
+        st.session_state.nav_choice = "🏠 Home"
 
     menu_options = [
         "🏠 Home",
@@ -247,31 +247,6 @@ elif nav_choice == "📦 Material Master":
     with tab2:
         st.subheader("PR Creation SAP")
         st.info("Add PR Creation SAP content here.")
-
-# ===============================
-# 📒 ACCOUNTS PAGE
-# ===============================
-elif nav_choice == "📒 Accounts":
-    render_search_page(
-        title="📒 Accounts Search Engine",
-        caption="Search Accounts topics from Accounts_data.csv",
-        input_label="Search Accounts Database:",
-        dataframe=df_accounts,
-        page_name="Accounts"
-    )
-
-# ===============================
-# 👤 ONBOARDING PAGE
-# ===============================
-elif nav_choice == "👤 Onboarding":
-    render_search_page(
-        title="👤 Onboarding Search Engine",
-        caption="Search Onboarding topics from Onboarding_data.csv",
-        input_label="Search Onboarding Database:",
-        dataframe=df_onboarding,
-        page_name="Onboarding"
-    )
-
 
 # ===============================
 # 🏠 Supplier Onboarding
