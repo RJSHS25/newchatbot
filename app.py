@@ -195,6 +195,9 @@ def render_search_page(title, caption, input_label, dataframe, page_name):
 with st.sidebar:
     st.title("🧭 Navigation")
 
+    if "nav_choice" not in st.session_state:
+        st.session_state.nav_choice = "🏠 Dashboard"
+
     nav_choice = st.radio(
         "View:",
         [
@@ -203,14 +206,17 @@ with st.sidebar:
             "📒 Accounts",
             "👤 Onboarding",
             "📊 Analytics"
-        ]
+        ],
+        index=[
+            "🏠 Dashboard",
+            "💰 Finance",
+            "📒 Accounts",
+            "👤 Onboarding",
+            "📊 Analytics"
+        ].index(st.session_state.nav_choice)
     )
 
-    st.divider()
-
-    if st.button("Logout"):
-        st.session_state.authenticated = False
-        st.rerun()
+    st.session_state.nav_choice = nav_choice
 
 # ===============================
 # 📊 ANALYTICS PAGE
@@ -295,23 +301,47 @@ else:
 
     col1, col2 = st.columns(2)
 
+
+
+
+    st.subheader("🚀 Quick Access")
+
+
     with col1:
-        st.success("💰 Finance")
+        st.page_link("app.py", label="💰 Open Finance", icon="💰")
         st.write("Search Finance policies and SOPs.")
-
+    
     with col2:
-        st.success("📒 Accounts")
+        st.page_link("app.py", label="📒 Open Accounts", icon="📒")
         st.write("Search GL, Vendor and Accounting processes.")
-
+    
     col3, col4 = st.columns(2)
-
+    
     with col3:
-        st.success("👤 Onboarding")
+        st.page_link("app.py", label="👤 Open Onboarding", icon="👤")
         st.write("New employee onboarding documents.")
-
+    
     with col4:
-        st.success("📊 Analytics")
+        st.page_link("app.py", label="📊 Open Analytics", icon="📊")
         st.write("View Portal Usage.")
+        
+        with col1:
+            st.success("💰 Finance")
+            st.write("Search Finance policies and SOPs.")
+    
+        with col2:
+            st.success("📒 Accounts")
+            st.write("Search GL, Vendor and Accounting processes.")
+    
+        col3, col4 = st.columns(2)
+    
+        with col3:
+            st.success("👤 Onboarding")
+            st.write("New employee onboarding documents.")
+    
+        with col4:
+            st.success("📊 Analytics")
+            st.write("View Portal Usage.")
 
     st.divider()
 
