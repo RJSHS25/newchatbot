@@ -176,6 +176,9 @@ def load_finance_data():
     return df
 
 
+df_finance = load_finance_data()
+
+
 # ===============================
 # ⬅️ SIDEBAR
 # ===============================
