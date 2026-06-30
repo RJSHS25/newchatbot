@@ -178,6 +178,55 @@ def load_finance_data():
 
 df_finance = load_finance_data()
 
+# =================
+# Adding more
+# ==================
+elif nav_choice == "📒 Accounts":
+    st.title("📒 Accounts Search Engine")
+    st.caption("Search Accounts topics from Accounts_data.csv")
+
+    accounts_query = st.text_input("Search Accounts Database:")
+
+    if accounts_query:
+        results = get_combined_matches(accounts_query, df_accounts)
+
+        if results:
+            best = results[0]
+            if best["score"] > 0.7:
+                st.success("Best match found")
+                st.markdown(f"### {best['q']}")
+                st.write(best["a"])
+            else:
+                st.info("I found a few related Accounts topics:")
+                for r in results:
+                    with st.expander(f"👉 {r['q']}"):
+                        st.write(r["a"])
+        else:
+            st.warning("No Accounts match found. Try rephrasing.")
+
+
+elif nav_choice == "👤 Onboarding":
+    st.title("👤 Onboarding Search Engine")
+    st.caption("Search Onboarding topics from Onboarding_data.csv")
+
+    onboarding_query = st.text_input("Search Onboarding Database:")
+
+    if onboarding_query:
+        results = get_combined_matches(onboarding_query, df_onboarding)
+
+        if results:
+            best = results[0]
+            if best["score"] > 0.7:
+                st.success("Best match found")
+                st.markdown(f"### {best['q']}")
+                st.write(best["a"])
+            else:
+                st.info("I found a few related Onboarding topics:")
+                for r in results:
+                    with st.expander(f"👉 {r['q']}"):
+                        st.write(r["a"])
+        else:
+            st.warning("No Onboarding match found. Try rephrasing.")
 
 # ===============================
 # ⬅️ SIDEBAR
@@ -199,6 +248,42 @@ with st.sidebar:
 # 🏗️ MAIN CONTENT AREA
 # ===============================
 
+@st.cache_data
+def load_accounts_data():
+    file_path = "Accounts_data.csv"
+
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+    else:
+        df = pd.DataFrame(columns=["Topic", "Description"])
+        df.loc[0] = ["Sample", "Accounts database empty."]
+
+    if "Question" in df.columns:
+        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
+
+    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
+    return df
+
+
+@st.cache_data
+def load_onboarding_data():
+    file_path = "Onboarding_data.csv"
+
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+    else:
+        df = pd.DataFrame(columns=["Topic", "Description"])
+        df.loc[0] = ["Sample", "Onboarding database empty."]
+
+    if "Question" in df.columns:
+        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
+
+    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
+    return df
+
+
+df_accounts = load_accounts_data()
+df_onboarding = load_onboarding_data()
 # ===============================
 # 🏗️ MAIN CONTENT AREA
 # ===============================
