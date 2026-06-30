@@ -161,12 +161,17 @@ def get_combined_matches(query, dataframe, top_n=5):
 # ===============================
 with st.sidebar:
     st.title("🧭 Navigation")
-    nav_choice = st.radio("View:", ["🏠 Dashboard", "📊 Analytics"])
+
+    nav_choice = st.radio(
+        "View:",
+        ["🏠 Dashboard", "💰 Finance", "📒 Accounts", "👤 Onboarding", "📊 Analytics"]
+    )
+
     st.divider()
+
     if st.button("Logout"):
         st.session_state.authenticated = False
         st.rerun()
-
 # ===============================
 # 🏗️ MAIN CONTENT AREA
 # ===============================
@@ -198,19 +203,30 @@ else:
         """, unsafe_allow_html=True)
         
     st.divider()
-    
-    st.markdown("### 🚀 Quick Links")
-    
-    if st.button("💰 Finance", use_container_width=True):
+
+    if nav_choice == "📊 Analytics":
+    st.title("📊 Usage Analytics")
+    if os.path.exists("usage_logs.csv"):
+        df_logs = pd.read_csv("usage_logs.csv")
+        st.dataframe(df_logs, use_container_width=True)
+    else:
+        st.info("No logs found yet.")
+
+    elif nav_choice == "💰 Finance":
+        st.title("💰 Finance")
         st.info("Finance section coming soon")
     
-    if st.button("📒 Accounts", use_container_width=True):
+    elif nav_choice == "📒 Accounts":
+        st.title("📒 Accounts")
         st.info("Accounts section coming soon")
     
-    if st.button("👤 Onboarding", use_container_width=True):
+    elif nav_choice == "👤 Onboarding":
+        st.title("👤 Onboarding")
         st.info("Onboarding section coming soon")
     
-    st.divider()
+    else:
+        # your existing Dashboard / GuruCool chatbot code here
+
     
     with st.expander("📺 Finance Overview Video"):
         st.video("https://www.youtube.com/watch?v=malw6c993qs")
