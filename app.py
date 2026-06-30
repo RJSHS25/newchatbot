@@ -302,11 +302,6 @@ else:
     col1, col2 = st.columns(2)
 
 
-
-
-    st.subheader("🚀 Quick Access")
-
-
     with col1:
         st.page_link("app.py", label="💰 Open Finance", icon="💰")
         st.write("Search Finance policies and SOPs.")
