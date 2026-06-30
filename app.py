@@ -79,7 +79,7 @@ def load_data(file_name, empty_message):
 
     return df
 
-# Main dashboard database
+# Main Finance_Dashboard database
 if os.path.exists("knowledge_base.csv"):
     df_kb = load_data("knowledge_base.csv", "Knowledge base empty.")
 else:
@@ -196,19 +196,19 @@ with st.sidebar:
     st.title("🧭 Navigation")
 
     if "nav_choice" not in st.session_state:
-        st.session_state.nav_choice = "🏠 Dashboard"
+        st.session_state.nav_choice = "🏠 Finance_Dashboard"
 
     nav_choice = st.radio(
         "View:",
         [
-            "🏠 Dashboard",
+            "🏠 Finance_Dashboard",
             "💰 Finance",
             "📒 Accounts",
             "👤 Onboarding",
             "📊 Analytics"
         ],
         index=[
-            "🏠 Dashboard",
+            "🏠 Finance_Dashboard",
             "💰 Finance",
             "📒 Accounts",
             "👤 Onboarding",
