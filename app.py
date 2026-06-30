@@ -264,93 +264,67 @@ elif nav_choice == "👤 Onboarding":
 # 🏠 DASHBOARD CHATBOT PAGE
 # ===============================
 else:
-    st.markdown("""
-    <h1 style='text-align:center;color:#0078d4;'>
-    Tech Mahindra Finance Portal
-    </h1>
-    <p style='text-align:center;color:#666;'>
-    Ask GuruCool anything about Materials, GL Accounts and Finance Processes
-    </p>
-    """, unsafe_allow_html=True)
+    st.title("🏢 Tech Mahindra Finance Portal")
+
+    st.markdown(f"""
+    ### Welcome **{st.session_state.user_email}** 👋
+
+    This portal provides quick access to Finance, Accounts,
+    Onboarding and Enterprise Knowledge.
+
+    Please choose a module from the left navigation panel.
+    """)
 
     st.divider()
 
-    st.subheader("🪐 TechMahindra Finance Guru")
+    st.subheader("📢 Announcements")
 
-    for m in st.session_state.messages:
-        with st.chat_message(m["role"]):
-            st.markdown(m["content"])
+    st.info("""
+    • Finance Month End Closing starts on 28th
 
-    if st.session_state.temp_results:
-        st.write("---")
-        st.caption("Common matches:")
+    • New GST Guidelines published
 
-        for i, r in enumerate(st.session_state.temp_results):
-            if st.button(
-                f"👉 {r['q']}",
-                key=f"sug_btn_{r['idx']}_{i}",
-                use_container_width=True
-            ):
-                log_usage(r["q"], st.session_state.user_email, "Dashboard")
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": f"**{r['q']}**\n\n{r['a']}"
-                })
-                st.session_state.temp_results = []
-                st.rerun()
+    • Vendor Master Process Updated
 
-    if prompt := st.chat_input("Ask GuruCool..."):
-        st.session_state.messages.append({
-            "role": "user",
-            "content": prompt
-        })
+    • Employee Travel Policy Version 5 Released
+    """)
 
-        st.session_state.temp_results = []
+    st.divider()
 
-        clean_p = prompt.lower().strip().translate(
-            str.maketrans("", "", string.punctuation)
-        )
+    st.subheader("🚀 Quick Access")
 
-        small_talk = {
-            "hi": "Hello!",
-            "hello": "Hi there!",
-            "thanks": "You're welcome!"
-        }
+    col1, col2 = st.columns(2)
 
-        if clean_p in small_talk:
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": small_talk[clean_p]
-            })
-        else:
-            results = get_combined_matches(prompt, df_kb)
+    with col1:
+        st.success("💰 Finance")
+        st.write("Search Finance policies and SOPs.")
 
-            if results:
-                best = results[0]
+    with col2:
+        st.success("📒 Accounts")
+        st.write("Search GL, Vendor and Accounting processes.")
 
-                if best["score"] > 0.7:
-                    log_usage(best["q"], st.session_state.user_email, "Dashboard")
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": f"**{best['q']}**\n\n{best['a']}"
-                    })
-                else:
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": "I found a few related topics:"
-                    })
-                    st.session_state.temp_results = results
-            else:
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": "I couldn't find a match. Could you rephrase?"
-                })
+    col3, col4 = st.columns(2)
 
-        st.rerun()
+    with col3:
+        st.success("👤 Onboarding")
+        st.write("New employee onboarding documents.")
 
-    if st.button("Clear Chat", use_container_width=True):
-        st.session_state.messages = [
-            {"role": "assistant", "content": "Hi! I'm GuruCool. How can I help you today?"}
-        ]
-        st.session_state.temp_results = []
-        st.rerun()
+    with col4:
+        st.success("📊 Analytics")
+        st.write("View Portal Usage.")
+
+    st.divider()
+
+    st.subheader("📌 About this Portal")
+
+    st.write("""
+    Welcome to the Tech Mahindra Finance Knowledge Portal.
+
+    This portal provides centralized access to Finance,
+    Accounts and Onboarding knowledge.
+
+    Use the navigation menu on the left to explore the available
+    knowledge bases.
+
+    Built with ❤️ by Tech Mahindra Finance Team.
+    """)
