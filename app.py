@@ -155,6 +155,26 @@ def get_combined_matches(query, dataframe, top_n=5):
     
     return unique_results
 
+# ===============
+# Finance Search data
+# =========
+
+@st.cache_data
+def load_finance_data():
+    file_path = "Finance_data.csv"
+
+    if os.path.exists(file_path):
+        df = pd.read_csv(file_path)
+    else:
+        df = pd.DataFrame(columns=["Topic", "Description"])
+        df.loc[0] = ["Sample", "Finance database empty."]
+
+    if "Question" in df.columns:
+        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
+
+    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
+    return df
+
 
 # ===============================
 # ⬅️ SIDEBAR
@@ -190,16 +210,30 @@ if nav_choice == "📊 Analytics":
         st.info("No logs found yet.")
 
 elif nav_choice == "💰 Finance":
-    st.title("💰 Finance")
-    st.info("Finance section coming soon")
+    st.title("💰 Finance Search Engine")
+    st.caption("Search Finance topics from Finance_data.csv")
 
-elif nav_choice == "📒 Accounts":
-    st.title("📒 Accounts")
-    st.info("Accounts section coming soon")
+    finance_query = st.text_input("Search Finance Database:")
 
-elif nav_choice == "👤 Onboarding":
-    st.title("👤 Onboarding")
-    st.info("Onboarding section coming soon")
+    if finance_query:
+        results = get_combined_matches(finance_query, df_finance)
+
+        if results:
+            best = results[0]
+
+            if best["score"] > 0.7:
+                st.success("Best match found")
+                st.markdown(f"### {best['q']}")
+                st.write(best["a"])
+
+            else:
+                st.info("I found a few related Finance topics:")
+
+                for i, r in enumerate(results):
+                    with st.expander(f"👉 {r['q']}"):
+                        st.write(r["a"])
+        else:
+            st.warning("No Finance match found. Try rephrasing.")
 
 else:
     # ===============================
