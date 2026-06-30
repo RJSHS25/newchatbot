@@ -196,24 +196,21 @@ with st.sidebar:
     st.title("🧭 Navigation")
 
     if "nav_choice" not in st.session_state:
-        st.session_state.nav_choice = "🏠 Finance_Dashboard"
+        st.session_state.nav_choice = "🏠 Finance Dashbaord"
+
+    menu_options = [
+        "🏠 Home",
+        "👥 Supplier Onboarding",
+        "🔎 PO/Invoice Search Engine",
+        "📦 Material Master",
+        "📚 Knowledge Repository",
+        "📊 Analytics"
+    ]
 
     nav_choice = st.radio(
         "View:",
-        [
-            "🏠 Finance_Dashboard",
-            "💰 Finance",
-            "📒 Accounts",
-            "👤 Onboarding",
-            "📊 Analytics"
-        ],
-        index=[
-            "🏠 Finance_Dashboard",
-            "💰 Finance",
-            "📒 Accounts",
-            "👤 Onboarding",
-            "📊 Analytics"
-        ].index(st.session_state.nav_choice)
+        menu_options,
+        index=menu_options.index(st.session_state.nav_choice)
     )
 
     st.session_state.nav_choice = nav_choice
@@ -233,14 +230,23 @@ if nav_choice == "📊 Analytics":
 # ===============================
 # 💰 FINANCE PAGE
 # ===============================
-elif nav_choice == "💰 Finance":
-    render_search_page(
-        title="💰 Finance Search Engine",
-        caption="Search Finance topics from Finance_data.csv",
-        input_label="Search Finance Database:",
-        dataframe=df_finance,
-        page_name="Finance"
-    )
+elif nav_choice == "📦 Material Master":
+    st.title("📦 Material Master")
+
+    tab1, tab2 = st.tabs(["Material Master Search Engine", "PR Creation SAP"])
+
+    with tab1:
+        render_search_page(
+            title="Material Master Search Engine",
+            caption="Search Material Master topics from Finance_data.csv",
+            input_label="Search Material Master:",
+            dataframe=df_finance,
+            page_name="Material Master"
+        )
+
+    with tab2:
+        st.subheader("PR Creation SAP")
+        st.info("Add PR Creation SAP content here.")
 
 # ===============================
 # 📒 ACCOUNTS PAGE
@@ -265,6 +271,52 @@ elif nav_choice == "👤 Onboarding":
         dataframe=df_onboarding,
         page_name="Onboarding"
     )
+
+
+# ===============================
+# 🏠 Supplier Onboarding
+# ===============================
+
+elif nav_choice == "👥 Supplier Onboarding":
+    st.title("👥 Supplier Onboarding")
+
+    tab1, tab2 = st.tabs(["Supplier Order Status", "Sample Guide for Questionnaire"])
+
+    with tab1:
+        st.subheader("Supplier Order Status")
+        st.info("Add Supplier Order Status search/content here.")
+
+    with tab2:
+        st.subheader("Sample Guide for Questionnaire")
+        st.info("Add questionnaire guide here.")
+
+
+elif nav_choice == "🔎 PO/Invoice Search Engine":
+    st.title("🔎 PO/Invoice Search Engine")
+
+    tab1, tab2 = st.tabs(["PO Status Search Engine", "Invoice Status"])
+
+    with tab1:
+        st.subheader("PO Status Search Engine")
+        st.info("Add PO Status search engine here.")
+
+    with tab2:
+        st.subheader("Invoice Status")
+        st.info("Add Invoice Status search here.")
+
+
+elif nav_choice == "📚 Knowledge Repository":
+    st.title("📚 Knowledge Repository")
+
+    tab1, tab2 = st.tabs(["SOP's", "Process Maps"])
+
+    with tab1:
+        st.subheader("SOP's")
+        st.info("Add SOP documents or links here.")
+
+    with tab2:
+        st.subheader("Process Maps")
+        st.info("Add process maps here.")
 
 # ===============================
 # 🏠 DASHBOARD CHATBOT PAGE
