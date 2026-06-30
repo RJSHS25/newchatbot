@@ -175,14 +175,37 @@ with st.sidebar:
 # ===============================
 # 🏗️ MAIN CONTENT AREA
 # ===============================
+
+# ===============================
+# 🏗️ MAIN CONTENT AREA
+# ===============================
+
 if nav_choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
+
     if os.path.exists("usage_logs.csv"):
         df_logs = pd.read_csv("usage_logs.csv")
         st.dataframe(df_logs, use_container_width=True)
     else:
         st.info("No logs found yet.")
+
+elif nav_choice == "💰 Finance":
+    st.title("💰 Finance")
+    st.info("Finance section coming soon")
+
+elif nav_choice == "📒 Accounts":
+    st.title("📒 Accounts")
+    st.info("Accounts section coming soon")
+
+elif nav_choice == "👤 Onboarding":
+    st.title("👤 Onboarding")
+    st.info("Onboarding section coming soon")
+
 else:
+    # ===============================
+    # 🏠 DASHBOARD PAGE
+    # ===============================
+
     st.markdown("""
     <h1 style='text-align:center;color:#0078d4;'>
     Tech Mahindra Finance Portal
@@ -191,8 +214,9 @@ else:
     Ask GuruCool anything about Materials, GL Accounts and Finance Processes
     </p>
     """, unsafe_allow_html=True)
-    
+
     st.divider()
+
     chat_col, nav_col = st.columns([0.85, 0.15])
 
     with nav_col:
@@ -201,81 +225,77 @@ else:
         TechM Finance
         </h4>
         """, unsafe_allow_html=True)
-        
-    st.divider()
 
-    if nav_choice == "📊 Analytics":
-    st.title("📊 Usage Analytics")
-    if os.path.exists("usage_logs.csv"):
-        df_logs = pd.read_csv("usage_logs.csv")
-        st.dataframe(df_logs, use_container_width=True)
-    else:
-        st.info("No logs found yet.")
-
-    elif nav_choice == "💰 Finance":
-        st.title("💰 Finance")
-        st.info("Finance section coming soon")
-    
-    elif nav_choice == "📒 Accounts":
-        st.title("📒 Accounts")
-        st.info("Accounts section coming soon")
-    
-    elif nav_choice == "👤 Onboarding":
-        st.title("👤 Onboarding")
-        st.info("Onboarding section coming soon")
-    
-    else:
-        # your existing Dashboard / GuruCool chatbot code here
-
-    
-    with st.expander("📺 Finance Overview Video"):
-        st.video("https://www.youtube.com/watch?v=malw6c993qs")
-
-
-    # --- THE RIGHT SIDE BOT (GURUCOOL) ---
     with chat_col:
         st.subheader("🪐 GuruCool AI")
+
         chat_history_container = st.container()
-        
+
         with chat_history_container:
             for m in st.session_state.messages:
                 with st.chat_message(m["role"]):
                     st.markdown(m["content"])
-            
+
             if st.session_state.temp_results:
                 st.write("---")
                 st.caption("Common matches:")
                 for i, r in enumerate(st.session_state.temp_results):
                     if st.button(f"👉 {r['q']}", key=f"sug_btn_{r['idx']}_{i}", use_container_width=True):
                         log_usage(r['q'], st.session_state.user_email)
-                        st.session_state.messages.append({"role": "assistant", "content": f"**{r['q']}**\n\n{r['a']}"})
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": f"**{r['q']}**\n\n{r['a']}"
+                        })
                         st.session_state.temp_results = []
                         st.rerun()
 
         if prompt := st.chat_input("Ask GuruCool...", key="bot_input"):
             st.session_state.messages.append({"role": "user", "content": prompt})
             st.session_state.temp_results = []
-            
-            clean_p = prompt.lower().strip().translate(str.maketrans('', '', string.punctuation))
-            small_talk = {"hi": "Hello!", "hello": "Hi there!", "thanks": "You're welcome!"}
-            
+
+            clean_p = prompt.lower().strip().translate(
+                str.maketrans('', '', string.punctuation)
+            )
+
+            small_talk = {
+                "hi": "Hello!",
+                "hello": "Hi there!",
+                "thanks": "You're welcome!"
+            }
+
             if clean_p in small_talk:
-                st.session_state.messages.append({"role": "assistant", "content": small_talk[clean_p]})
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": small_talk[clean_p]
+                })
             else:
-                # This is the line that was crashing
                 results = get_combined_matches(prompt, df_kb)
+
                 if results:
                     if results[0]['score'] > 0.7:
                         log_usage(results[0]['q'], st.session_state.user_email)
-                        st.session_state.messages.append({"role": "assistant", "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"})
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"
+                        })
                     else:
-                        st.session_state.messages.append({"role": "assistant", "content": "I found a few related topics:"})
+                        st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": "I found a few related topics:"
+                        })
                         st.session_state.temp_results = results
                 else:
-                    st.session_state.messages.append({"role": "assistant", "content": "I couldn't find a match. Could you rephrase?"})
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": "I couldn't find a match. Could you rephrase?"
+                    })
+
             st.rerun()
 
         if st.button("Clear Chat", key="reset_chat", use_container_width=True):
-            st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool."}]
+            st.session_state.messages = [{
+                "role": "assistant",
+                "content": "Hi! I'm GuruCool."
+            }]
             st.session_state.temp_results = []
             st.rerun()
