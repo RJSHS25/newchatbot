@@ -338,10 +338,6 @@ else:
         with col3:
             st.success("👤 Onboarding")
             st.write("New employee onboarding documents.")
-    
-        with col4:
-            st.success("📊 Analytics")
-            st.write("View Portal Usage.")
 
     st.divider()
 
