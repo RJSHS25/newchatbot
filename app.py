@@ -221,9 +221,7 @@ else:
 
     with nav_col:
         st.markdown("""
-        <h4 style='text-align:center;color:#0078d4;'>
-        TechM Finance
-        </h4>
+        
         """, unsafe_allow_html=True)
 
     with chat_col:
