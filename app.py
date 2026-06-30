@@ -2,119 +2,133 @@ import streamlit as st
 import pandas as pd
 import os
 import csv
-import string    
+import string
 from datetime import datetime
 from fuzzywuzzy import fuzz, process
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 # ===============================
-# ⚙️ CONFIG & SESSION STATE
+# ⚙️ SESSION STATE
 # ===============================
-
-
-if 'authenticated' not in st.session_state:
+if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "Hi! I'm GuruCool. How can I help you today?"}]
-if 'temp_results' not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hi! I'm GuruCool. How can I help you today?"}
+    ]
+
+if "temp_results" not in st.session_state:
     st.session_state.temp_results = []
 
 # ===============================
-# 🔐 AUTHENTICATION
+# 🔐 LOGIN
 # ===============================
 if not st.session_state.authenticated:
     st.title("🔐 TechM Portal Login")
     email = st.text_input("Enter Email:")
+
     if st.button("Login"):
         if "@" in email:
             st.session_state.authenticated = True
             st.session_state.user_email = email
             st.rerun()
+        else:
+            st.error("Please enter a valid email.")
+
     st.stop()
 
 # ===============================
-# 📄 DATA & SEARCH ENGINE
+# 📝 LOGGING
 # ===============================
-def log_usage(question, user_email):
+def log_usage(question, user_email, page_name):
     log_file = "usage_logs.csv"
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     file_exists = os.path.isfile(log_file)
-    with open(log_file, mode='a', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
-        if not file_exists:
-            writer.writerow(['Timestamp', 'User', 'Question'])
-        writer.writerow([timestamp, user_email, question])
 
+    with open(log_file, mode="a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+
+        if not file_exists:
+            writer.writerow(["Timestamp", "User", "Page", "Question"])
+
+        writer.writerow([timestamp, user_email, page_name, question])
+
+# ===============================
+# 📄 DATA LOADER
+# ===============================
 @st.cache_data
-def load_and_prep_data():
-    file_path = "knowledge_base.csv" if os.path.exists("knowledge_base.csv") else "data.csv"
-    if os.path.exists(file_path):
-        df = pd.read_csv(file_path)
+def load_data(file_name, empty_message):
+    if os.path.exists(file_name):
+        df = pd.read_csv(file_name)
     else:
-        df = pd.DataFrame(columns=['Topic', 'Description'])
-        df.loc[0] = ["Sample", "Knowledge base empty."]
-    
-    if 'Question' in df.columns:
-        df.rename(columns={'Question': 'Topic', 'Answer': 'Description'}, inplace=True)
-    df['profile'] = df['Topic'].fillna('') + " " + df['Description'].fillna('')
+        df = pd.DataFrame(columns=["Topic", "Description"])
+        df.loc[0] = ["Sample", empty_message]
+
+    if "Question" in df.columns and "Answer" in df.columns:
+        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
+
+    if "Topic" not in df.columns:
+        df["Topic"] = ""
+
+    if "Description" not in df.columns:
+        df["Description"] = ""
+
+    df["Topic"] = df["Topic"].fillna("").astype(str)
+    df["Description"] = df["Description"].fillna("").astype(str)
+    df["profile"] = df["Topic"] + " " + df["Description"]
+
     return df
 
-df_kb = load_and_prep_data()
+# Main dashboard database
+if os.path.exists("knowledge_base.csv"):
+    df_kb = load_data("knowledge_base.csv", "Knowledge base empty.")
+else:
+    df_kb = load_data("data.csv", "Knowledge base empty.")
 
+df_finance = load_data("Finance_data.csv", "Finance database empty.")
+df_accounts = load_data("Accounts_data.csv", "Accounts database empty.")
+df_onboarding = load_data("Onboarding_data.csv", "Onboarding database empty.")
+
+# ===============================
+# 🔎 SEARCH ENGINE
+# ===============================
 def get_combined_matches(query, dataframe, top_n=5):
-
     if dataframe.empty:
         return []
 
     query_clean = query.lower().strip()
-
     results = []
 
-    # ==========================
-    # 1. Exact Match
-    # ==========================
     exact_matches = dataframe[
-        dataframe['Topic']
-        .astype(str)
-        .str.lower()
-        == query_clean
+        dataframe["Topic"].astype(str).str.lower() == query_clean
     ]
 
     for idx, row in exact_matches.iterrows():
         results.append({
             "score": 1.0,
-            "q": row['Topic'],
-            "a": row['Description'],
+            "q": row["Topic"],
+            "a": row["Description"],
             "idx": idx
         })
 
-    # ==========================
-    # 2. Partial Match
-    # ==========================
     if not results:
-
         partial_matches = dataframe[
-            dataframe['Topic']
+            dataframe["Topic"]
             .astype(str)
             .str.lower()
-            .str.contains(query_clean, na=False)
+            .str.contains(query_clean, na=False, regex=False)
         ]
 
         for idx, row in partial_matches.iterrows():
             results.append({
                 "score": 0.95,
-                "q": row['Topic'],
-                "a": row['Description'],
+                "q": row["Topic"],
+                "a": row["Description"],
                 "idx": idx
             })
 
-    # ==========================
-    # 3. Fuzzy Match Fallback
-    # ==========================
     if not results:
-
-        choices = dataframe['Topic'].astype(str).tolist()
+        choices = dataframe["Topic"].astype(str).tolist()
 
         fuzzy_results = process.extract(
             query,
@@ -123,25 +137,16 @@ def get_combined_matches(query, dataframe, top_n=5):
             limit=top_n
         )
 
-        for match in fuzzy_results:
-
-            match_text = match[0]
-            score = match[1]
-
+        for match_text, score in fuzzy_results:
             if score > 55:
-
-                idx_list = dataframe.index[
-                    dataframe['Topic'] == match_text
-                ].tolist()
+                idx_list = dataframe.index[dataframe["Topic"] == match_text].tolist()
 
                 if idx_list:
-
                     idx = idx_list[0]
-
                     results.append({
                         "score": score / 100,
-                        "q": dataframe.iloc[idx]['Topic'],
-                        "a": dataframe.iloc[idx]['Description'],
+                        "q": dataframe.iloc[idx]["Topic"],
+                        "a": dataframe.iloc[idx]["Description"],
                         "idx": idx
                     })
 
@@ -149,84 +154,40 @@ def get_combined_matches(query, dataframe, top_n=5):
     seen = set()
 
     for r in results:
-        if r['idx'] not in seen:
+        if r["idx"] not in seen:
             unique_results.append(r)
-            seen.add(r['idx'])
-    
+            seen.add(r["idx"])
+
     return unique_results
 
-# ===============
-# Finance Search data
-# =========
+# ===============================
+# 🔎 REUSABLE SEARCH PAGE
+# ===============================
+def render_search_page(title, caption, input_label, dataframe, page_name):
+    st.title(title)
+    st.caption(caption)
 
-@st.cache_data
-def load_finance_data():
-    file_path = "Finance_data.csv"
+    query = st.text_input(input_label)
 
-    if os.path.exists(file_path):
-        df = pd.read_csv(file_path)
-    else:
-        df = pd.DataFrame(columns=["Topic", "Description"])
-        df.loc[0] = ["Sample", "Finance database empty."]
-
-    if "Question" in df.columns:
-        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
-
-    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
-    return df
-
-
-df_finance = load_finance_data()
-
-# =================
-# Adding more
-# ==================
-elif nav_choice == "📒 Accounts":
-    st.title("📒 Accounts Search Engine")
-    st.caption("Search Accounts topics from Accounts_data.csv")
-
-    accounts_query = st.text_input("Search Accounts Database:")
-
-    if accounts_query:
-        results = get_combined_matches(accounts_query, df_accounts)
+    if query:
+        results = get_combined_matches(query, dataframe)
 
         if results:
             best = results[0]
+
             if best["score"] > 0.7:
+                log_usage(best["q"], st.session_state.user_email, page_name)
                 st.success("Best match found")
                 st.markdown(f"### {best['q']}")
                 st.write(best["a"])
             else:
-                st.info("I found a few related Accounts topics:")
-                for r in results:
+                st.info("I found a few related topics:")
+
+                for i, r in enumerate(results):
                     with st.expander(f"👉 {r['q']}"):
                         st.write(r["a"])
         else:
-            st.warning("No Accounts match found. Try rephrasing.")
-
-
-elif nav_choice == "👤 Onboarding":
-    st.title("👤 Onboarding Search Engine")
-    st.caption("Search Onboarding topics from Onboarding_data.csv")
-
-    onboarding_query = st.text_input("Search Onboarding Database:")
-
-    if onboarding_query:
-        results = get_combined_matches(onboarding_query, df_onboarding)
-
-        if results:
-            best = results[0]
-            if best["score"] > 0.7:
-                st.success("Best match found")
-                st.markdown(f"### {best['q']}")
-                st.write(best["a"])
-            else:
-                st.info("I found a few related Onboarding topics:")
-                for r in results:
-                    with st.expander(f"👉 {r['q']}"):
-                        st.write(r["a"])
-        else:
-            st.warning("No Onboarding match found. Try rephrasing.")
+            st.warning("No match found. Try rephrasing.")
 
 # ===============================
 # ⬅️ SIDEBAR
@@ -236,7 +197,13 @@ with st.sidebar:
 
     nav_choice = st.radio(
         "View:",
-        ["🏠 Dashboard", "💰 Finance", "📒 Accounts", "👤 Onboarding", "📊 Analytics"]
+        [
+            "🏠 Dashboard",
+            "💰 Finance",
+            "📒 Accounts",
+            "👤 Onboarding",
+            "📊 Analytics"
+        ]
     )
 
     st.divider()
@@ -244,50 +211,10 @@ with st.sidebar:
     if st.button("Logout"):
         st.session_state.authenticated = False
         st.rerun()
+
 # ===============================
-# 🏗️ MAIN CONTENT AREA
+# 📊 ANALYTICS PAGE
 # ===============================
-
-@st.cache_data
-def load_accounts_data():
-    file_path = "Accounts_data.csv"
-
-    if os.path.exists(file_path):
-        df = pd.read_csv(file_path)
-    else:
-        df = pd.DataFrame(columns=["Topic", "Description"])
-        df.loc[0] = ["Sample", "Accounts database empty."]
-
-    if "Question" in df.columns:
-        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
-
-    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
-    return df
-
-
-@st.cache_data
-def load_onboarding_data():
-    file_path = "Onboarding_data.csv"
-
-    if os.path.exists(file_path):
-        df = pd.read_csv(file_path)
-    else:
-        df = pd.DataFrame(columns=["Topic", "Description"])
-        df.loc[0] = ["Sample", "Onboarding database empty."]
-
-    if "Question" in df.columns:
-        df.rename(columns={"Question": "Topic", "Answer": "Description"}, inplace=True)
-
-    df["profile"] = df["Topic"].fillna("") + " " + df["Description"].fillna("")
-    return df
-
-
-df_accounts = load_accounts_data()
-df_onboarding = load_onboarding_data()
-# ===============================
-# 🏗️ MAIN CONTENT AREA
-# ===============================
-
 if nav_choice == "📊 Analytics":
     st.title("📊 Usage Analytics")
 
@@ -297,37 +224,46 @@ if nav_choice == "📊 Analytics":
     else:
         st.info("No logs found yet.")
 
+# ===============================
+# 💰 FINANCE PAGE
+# ===============================
 elif nav_choice == "💰 Finance":
-    st.title("💰 Finance Search Engine")
-    st.caption("Search Finance topics from Finance_data.csv")
+    render_search_page(
+        title="💰 Finance Search Engine",
+        caption="Search Finance topics from Finance_data.csv",
+        input_label="Search Finance Database:",
+        dataframe=df_finance,
+        page_name="Finance"
+    )
 
-    finance_query = st.text_input("Search Finance Database:")
+# ===============================
+# 📒 ACCOUNTS PAGE
+# ===============================
+elif nav_choice == "📒 Accounts":
+    render_search_page(
+        title="📒 Accounts Search Engine",
+        caption="Search Accounts topics from Accounts_data.csv",
+        input_label="Search Accounts Database:",
+        dataframe=df_accounts,
+        page_name="Accounts"
+    )
 
-    if finance_query:
-        results = get_combined_matches(finance_query, df_finance)
+# ===============================
+# 👤 ONBOARDING PAGE
+# ===============================
+elif nav_choice == "👤 Onboarding":
+    render_search_page(
+        title="👤 Onboarding Search Engine",
+        caption="Search Onboarding topics from Onboarding_data.csv",
+        input_label="Search Onboarding Database:",
+        dataframe=df_onboarding,
+        page_name="Onboarding"
+    )
 
-        if results:
-            best = results[0]
-
-            if best["score"] > 0.7:
-                st.success("Best match found")
-                st.markdown(f"### {best['q']}")
-                st.write(best["a"])
-
-            else:
-                st.info("I found a few related Finance topics:")
-
-                for i, r in enumerate(results):
-                    with st.expander(f"👉 {r['q']}"):
-                        st.write(r["a"])
-        else:
-            st.warning("No Finance match found. Try rephrasing.")
-
+# ===============================
+# 🏠 DASHBOARD CHATBOT PAGE
+# ===============================
 else:
-    # ===============================
-    # 🏠 DASHBOARD PAGE
-    # ===============================
-
     st.markdown("""
     <h1 style='text-align:center;color:#0078d4;'>
     Tech Mahindra Finance Portal
@@ -339,83 +275,82 @@ else:
 
     st.divider()
 
-    chat_col, nav_col = st.columns([0.85, 0.15])
+    st.subheader("🪐 TechMahindra Finance Guru")
 
-    with nav_col:
-        st.markdown("""
-        
-        """, unsafe_allow_html=True)
+    for m in st.session_state.messages:
+        with st.chat_message(m["role"]):
+            st.markdown(m["content"])
 
-    with chat_col:
-        st.subheader("🪐 TechMahindra Finance Guru")
+    if st.session_state.temp_results:
+        st.write("---")
+        st.caption("Common matches:")
 
-        chat_history_container = st.container()
-
-        with chat_history_container:
-            for m in st.session_state.messages:
-                with st.chat_message(m["role"]):
-                    st.markdown(m["content"])
-
-            if st.session_state.temp_results:
-                st.write("---")
-                st.caption("Common matches:")
-                for i, r in enumerate(st.session_state.temp_results):
-                    if st.button(f"👉 {r['q']}", key=f"sug_btn_{r['idx']}_{i}", use_container_width=True):
-                        log_usage(r['q'], st.session_state.user_email)
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": f"**{r['q']}**\n\n{r['a']}"
-                        })
-                        st.session_state.temp_results = []
-                        st.rerun()
-
-        if prompt := st.chat_input("Ask GuruCool...", key="bot_input"):
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            st.session_state.temp_results = []
-
-            clean_p = prompt.lower().strip().translate(
-                str.maketrans('', '', string.punctuation)
-            )
-
-            small_talk = {
-                "hi": "Hello!",
-                "hello": "Hi there!",
-                "thanks": "You're welcome!"
-            }
-
-            if clean_p in small_talk:
+        for i, r in enumerate(st.session_state.temp_results):
+            if st.button(
+                f"👉 {r['q']}",
+                key=f"sug_btn_{r['idx']}_{i}",
+                use_container_width=True
+            ):
+                log_usage(r["q"], st.session_state.user_email, "Dashboard")
                 st.session_state.messages.append({
                     "role": "assistant",
-                    "content": small_talk[clean_p]
+                    "content": f"**{r['q']}**\n\n{r['a']}"
                 })
-            else:
-                results = get_combined_matches(prompt, df_kb)
+                st.session_state.temp_results = []
+                st.rerun()
 
-                if results:
-                    if results[0]['score'] > 0.7:
-                        log_usage(results[0]['q'], st.session_state.user_email)
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": f"**{results[0]['q']}**\n\n{results[0]['a']}"
-                        })
-                    else:
-                        st.session_state.messages.append({
-                            "role": "assistant",
-                            "content": "I found a few related topics:"
-                        })
-                        st.session_state.temp_results = results
+    if prompt := st.chat_input("Ask GuruCool..."):
+        st.session_state.messages.append({
+            "role": "user",
+            "content": prompt
+        })
+
+        st.session_state.temp_results = []
+
+        clean_p = prompt.lower().strip().translate(
+            str.maketrans("", "", string.punctuation)
+        )
+
+        small_talk = {
+            "hi": "Hello!",
+            "hello": "Hi there!",
+            "thanks": "You're welcome!"
+        }
+
+        if clean_p in small_talk:
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": small_talk[clean_p]
+            })
+        else:
+            results = get_combined_matches(prompt, df_kb)
+
+            if results:
+                best = results[0]
+
+                if best["score"] > 0.7:
+                    log_usage(best["q"], st.session_state.user_email, "Dashboard")
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": f"**{best['q']}**\n\n{best['a']}"
+                    })
                 else:
                     st.session_state.messages.append({
                         "role": "assistant",
-                        "content": "I couldn't find a match. Could you rephrase?"
+                        "content": "I found a few related topics:"
                     })
+                    st.session_state.temp_results = results
+            else:
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": "I couldn't find a match. Could you rephrase?"
+                })
 
-            st.rerun()
+        st.rerun()
 
-        if st.button("Clear Chat", key="reset_chat", use_container_width=True):
-            st.session_state.messages = [{
-                "role": "assistant",
-                "content": "Hi! I'm GuruCool."
-            }]
-            st.session_state.temp_results = []
-            st.rerun()
+    if st.button("Clear Chat", use_container_width=True):
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Hi! I'm GuruCool. How can I help you today?"}
+        ]
+        st.session_state.temp_results = []
+        st.rerun()
